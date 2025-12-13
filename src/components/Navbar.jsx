@@ -150,7 +150,7 @@ export default function Navbar() {
 
                                     <div className="mt-auto mb-8">
                                         <Button asChild className="w-full rounded-full shadow-lg" size="lg">
-                                            <a href="https://sbcc-frontend.pages.dev/" target="_blank" rel="noopener noreferrer">
+                                            <a href="https://sbcc-app.pages.dev/" target="_blank" rel="noopener noreferrer">
                                                 <LayoutDashboard className="mr-2 h-5 w-5" />
                                                 Management System
                                             </a>

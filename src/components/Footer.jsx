@@ -54,7 +54,7 @@ export default function Footer() {
                             <li><a href="#" className="hover:text-primary hover:translate-x-1 transition-all duration-300 inline-block">Events Calendar</a></li>
                             <li>
                                 <a
-                                    href="https://sbcc-frontend.pages.dev/"
+                                    href="https://sbcc-app.pages.dev/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-2 mt-2"
