@@ -103,7 +103,7 @@ export default function Navbar() {
                         )}
                         title="Management System"
                     >
-                        <a href="https://sbcc-frontend.pages.dev/" target="_blank" rel="noopener noreferrer">
+                        <a href="https://sbcc-app.pages.dev/" target="_blank" rel="noopener noreferrer">
                             <LayoutDashboard className="h-5 w-5" />
                             <span className="sr-only">Management System</span>
                         </a>
