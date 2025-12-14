@@ -7,7 +7,7 @@ export default function Hero() {
             {/* Background Image with Parallax Effect */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src="/assets/hero-banner.png"
+                    src="/assets/hero-banner.jpg"
                     alt="Church Worship Background"
                     className="w-full h-full object-cover scale-105 animate-in fade-in duration-1000"
                     loading="eager"

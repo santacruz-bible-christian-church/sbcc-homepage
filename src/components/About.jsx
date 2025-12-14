@@ -10,19 +10,20 @@ export default function About() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
                     <div className="relative order-2 lg:order-1">
                         <div className="absolute -inset-4 bg-primary/10 rounded-3xl -z-10 transform -rotate-3"></div>
-                        <div className="relative h-[500px] bg-neutral-100 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center border border-border">
-                            <div className="text-primary/20 flex flex-col items-center gap-4">
-                                <Church size={120} strokeWidth={1} />
-                                <span className="text-lg font-medium text-primary/40">Our Church Home</span>
-                            </div>
+                        <div className="relative h-[500px] bg-neutral-100 rounded-2xl overflow-hidden shadow-2xl border border-border">
+                            <img 
+                                src="/assets/church-building.jpg" 
+                                alt="Santa Cruz Bible Christian Church Building"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
 
                         <div className="absolute -bottom-8 -right-8 bg-white p-6 rounded-xl shadow-xl border border-border max-w-xs hidden md:block">
                             <div className="flex items-center gap-4 mb-2">
-                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">35+</div>
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">69+</div>
                                 <div>
                                     <p className="font-bold text-foreground">Years of Service</p>
-                                    <p className="text-sm text-muted-foreground">Serving Santa Cruz since 1985</p>
+                                    <p className="text-sm text-muted-foreground">Serving Santa Cruz since 1956</p>
                                 </div>
                             </div>
                         </div>
@@ -33,7 +34,7 @@ export default function About() {
                             <h4 className="text-primary font-bold tracking-wide uppercase text-sm mb-2">Who We Are</h4>
                             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">A Community of Faith, Hope, and Love</h2>
                             <p className="text-lg text-muted-foreground leading-relaxed">
-                                Founded in 1985, Santa Cruz Bible Christian Church has been a beacon of hope in our city for over three decades. We started as a small bible study group and have grown into a vibrant family of believers dedicated to living out the Gospel.
+                                Founded in 1956, Santa Cruz Bible Christian Church has been a beacon of hope in our city for nearly seven decades. We started as a small bible study group and have grown into a vibrant family of believers dedicated to living out the Gospel.
                             </p>
                         </div>
 
