@@ -36,9 +36,7 @@ export default function Contact() {
                                 <div>
                                     <h3 className="text-xl font-bold mb-2">Service Times</h3>
                                     <div className="space-y-1 text-muted-foreground text-lg">
-                                        <p><span className="font-medium text-foreground">Sunday Worship:</span> 10:00 AM</p>
-                                        <p><span className="font-medium text-foreground">Sunday School:</span> 9:00 AM</p>
-                                        <p><span className="font-medium text-foreground">Wed Bible Study:</span> 7:00 PM</p>
+                                        <p><span className="font-medium text-foreground">Sunday Worship:</span> 9:00 AM - 11:00 AM</p>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +48,7 @@ export default function Contact() {
                                     <Phone className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-1">Call Us</h3>
-                                <p className="text-muted-foreground">(831) 426-0618</p>
+                                <p className="text-muted-foreground">(+63) 917-222-2222</p>
                             </div>
 
                             <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
@@ -58,7 +56,7 @@ export default function Contact() {
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-1">Email Us</h3>
-                                <p className="text-muted-foreground">info@santacruzbible.org</p>
+                                <p className="text-muted-foreground">1992.sbcc@gmail.com</p>
                             </div>
                         </div>
 

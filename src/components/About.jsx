@@ -108,19 +108,9 @@ export default function About() {
                                     <Heart className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h4 className="text-lg font-bold">Rev. John Doe</h4>
+                                    <h4 className="text-lg font-bold">Dennis Badillo</h4>
                                     <p className="text-primary font-medium">Senior Pastor</p>
                                     <p className="text-sm text-muted-foreground">Serving since 2010</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
-                                    <Users className="w-8 h-8" />
-                                </div>
-                                <div>
-                                    <h4 className="text-lg font-bold">Jane Smith</h4>
-                                    <p className="text-primary font-medium">Associate Pastor</p>
-                                    <p className="text-sm text-muted-foreground">Leading Youth & Outreach</p>
                                 </div>
                             </div>
                         </div>
