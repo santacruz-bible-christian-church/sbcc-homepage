@@ -107,7 +107,7 @@ export default function PrayerRequest() {
                                     id="title"
                                     placeholder="Brief title for your request"
                                     required
-                                    className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                    className="h-12 bg-secondary/20 border-border/50 focus:bg-white transition-colors"
                                     value={formData.title}
                                     onChange={handleChange}
                                 />
@@ -122,7 +122,7 @@ export default function PrayerRequest() {
                                     <Input
                                         id="requesterName"
                                         placeholder="Your Name"
-                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                        className="h-12 bg-secondary/20 border-border/50 focus:bg-white transition-colors"
                                         value={formData.requesterName}
                                         onChange={handleChange}
                                         disabled={formData.isAnonymous}
@@ -137,7 +137,7 @@ export default function PrayerRequest() {
                                         id="requesterEmail"
                                         type="email"
                                         placeholder="Your Email"
-                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                        className="h-12 bg-secondary/20 border-border/50 focus:bg-white transition-colors"
                                         value={formData.requesterEmail}
                                         onChange={handleChange}
                                         disabled={formData.isAnonymous}
@@ -151,7 +151,7 @@ export default function PrayerRequest() {
                                     Category <span className="text-muted-foreground font-normal">(Optional)</span>
                                 </Label>
                                 <Select onValueChange={handleCategoryChange} value={formData.category}>
-                                    <SelectTrigger className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors">
+                                    <SelectTrigger className="h-12 bg-secondary/20 border-border/50 focus:bg-white transition-colors">
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -179,7 +179,7 @@ export default function PrayerRequest() {
                                     placeholder="Share your prayer request here..."
                                     required
                                     rows={5}
-                                    className="resize-none text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors p-4"
+                                    className="resize-none bg-secondary/20 border-border/50 focus:bg-white transition-colors p-4"
                                     value={formData.description}
                                     onChange={handleChange}
                                 />
