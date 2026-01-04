@@ -6,6 +6,7 @@ import PrayerRequest from "@/components/PrayerRequest";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import AnnouncementsPage from "@/pages/AnnouncementsPage";
 
 function HomePage() {
   return (
@@ -28,9 +29,11 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/announcements" element={<AnnouncementsPage />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
+
