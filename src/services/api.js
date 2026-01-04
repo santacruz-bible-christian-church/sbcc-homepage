@@ -9,21 +9,6 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
  * @param {Object} options - Query options
  * @param {number} [options.limit] - Maximum number of announcements to fetch (max 50)
  * @returns {Promise<Array>} List of announcements
- * 
- * Response structure from backend:
- * {
- *   count: number,
- *   results: Array<{
- *     id: number,
- *     title: string,
- *     body: string,
- *     audience: "all" | "ministry",
- *     ministry_name: string | null,
- *     publish_at: string (ISO date),
- *     expire_at: string | null,
- *     created_at: string
- *   }>
- * }
  */
 async function getAnnouncements({ limit } = {}) {
     try {
@@ -40,7 +25,6 @@ async function getAnnouncements({ limit } = {}) {
         }
 
         const data = await response.json();
-        // Backend returns { count, results } format
         return data.results || [];
     } catch (error) {
         console.error('Failed to fetch announcements:', error);
@@ -51,34 +35,53 @@ async function getAnnouncements({ limit } = {}) {
 /**
  * Submit a prayer request to the SBCCMS backend
  * @param {Object} data - Prayer request data
- * @param {string} [data.name] - Requester's name (optional)
- * @param {string} [data.email] - Requester's email (optional)
- * @param {string} data.category - Prayer category
- * @param {string} data.request - Prayer request content
+ * @param {string} data.title - Prayer request title (required)
+ * @param {string} data.description - Prayer request content (required)
+ * @param {string} [data.category] - Prayer category (optional, default: "other")
  * @param {boolean} data.isAnonymous - Whether to submit anonymously
+ * @param {string} [data.requesterName] - Requester's name (required if not anonymous)
+ * @param {string} [data.requesterEmail] - Requester's email (optional)
  * @returns {Promise<Object>} Response with success status
  */
 async function submitPrayerRequest(data) {
+    // Build payload according to backend requirements
+    const payload = {
+        title: data.title,
+        description: data.description,
+        is_anonymous: data.isAnonymous,
+    };
+
+    // Add category if provided (backend defaults to "other")
+    if (data.category) {
+        payload.category = data.category.toLowerCase();
+    }
+
+    // If not anonymous, requester_name is required
+    if (!data.isAnonymous && data.requesterName) {
+        payload.requester_name = data.requesterName;
+    }
+
+    // Add optional email
+    if (data.requesterEmail) {
+        payload.requester_email = data.requesterEmail;
+    }
+
     try {
-        const response = await fetch(`${API_URL}/public/prayer-request/`, {
+        const response = await fetch(`${API_URL}/public/prayer-requests/submit/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                name: data.isAnonymous ? null : data.name,
-                email: data.isAnonymous ? null : data.email,
-                category: data.category,
-                request: data.request,
-                is_anonymous: data.isAnonymous,
-            }),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(JSON.stringify(errorData));
         }
 
-        return { success: true, message: 'Prayer request received successfully.' };
+        const result = await response.json();
+        return { success: true, data: result };
     } catch (error) {
         console.error('Failed to submit prayer request:', error);
         throw error;
