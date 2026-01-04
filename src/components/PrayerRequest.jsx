@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Send, CheckCircle2, Loader2 } from "lucide-react";
+import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -16,11 +16,13 @@ import { api } from "@/services/api";
 
 export default function PrayerRequest() {
     const [status, setStatus] = useState("idle"); // idle, submitting, success, error
+    const [errorMessage, setErrorMessage] = useState("");
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
+        title: "",
+        requesterName: "",
+        requesterEmail: "",
         category: "",
-        request: "",
+        description: "",
         isAnonymous: false
     });
 
@@ -40,24 +42,31 @@ export default function PrayerRequest() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus("submitting");
+        setErrorMessage("");
+
+        // Validate: if not anonymous, name is required
+        if (!formData.isAnonymous && !formData.requesterName.trim()) {
+            setStatus("error");
+            setErrorMessage("Please provide your name or choose to submit anonymously.");
+            return;
+        }
 
         try {
-            const response = await api.submitPrayerRequest(formData);
-            if (response.success) {
-                setStatus("success");
-                setFormData({
-                    name: "",
-                    email: "",
-                    category: "",
-                    request: "",
-                    isAnonymous: false
-                });
-                setTimeout(() => setStatus("idle"), 5000);
-            }
+            await api.submitPrayerRequest(formData);
+            setStatus("success");
+            setFormData({
+                title: "",
+                requesterName: "",
+                requesterEmail: "",
+                category: "",
+                description: "",
+                isAnonymous: false
+            });
+            setTimeout(() => setStatus("idle"), 5000);
         } catch (error) {
             console.error("Failed to submit prayer request:", error);
-            setStatus("idle"); // Or error state
-            alert("Failed to send request. Please try again.");
+            setStatus("error");
+            setErrorMessage("Failed to send request. Please try again.");
         }
     };
 
@@ -78,7 +87,8 @@ export default function PrayerRequest() {
                         {/* Decorative background element */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
 
-                        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+                        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                            {/* Anonymous Toggle */}
                             <div className="flex items-center justify-end space-x-2">
                                 <Switch
                                     id="isAnonymous"
@@ -88,62 +98,94 @@ export default function PrayerRequest() {
                                 <Label htmlFor="isAnonymous" className="font-medium cursor-pointer">Submit Anonymously</Label>
                             </div>
 
-                            <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 transition-opacity duration-300 ${formData.isAnonymous ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-                                <div className="space-y-3">
-                                    <Label htmlFor="name" className="text-base font-medium">Name <span className="text-muted-foreground font-normal">(Optional)</span></Label>
-                                    <Input
-                                        id="name"
-                                        placeholder="Your Name"
-                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        disabled={formData.isAnonymous}
-                                    />
-                                </div>
-                                <div className="space-y-3">
-                                    <Label htmlFor="email" className="text-base font-medium">Email <span className="text-muted-foreground font-normal">(Optional)</span></Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="Your Email"
-                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        disabled={formData.isAnonymous}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <Label htmlFor="category" className="text-base font-medium">Category <span className="text-red-500">*</span></Label>
-                                <Select onValueChange={handleCategoryChange} value={formData.category} required>
-                                    <SelectTrigger className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors">
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Healing">Healing</SelectItem>
-                                        <SelectItem value="Guidance">Guidance</SelectItem>
-                                        <SelectItem value="Family">Family</SelectItem>
-                                        <SelectItem value="Thanksgiving">Thanksgiving</SelectItem>
-                                        <SelectItem value="Salvation">Salvation</SelectItem>
-                                        <SelectItem value="Other">Other</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-3">
-                                <Label htmlFor="request" className="text-base font-medium">Prayer Request <span className="text-red-500">*</span></Label>
-                                <Textarea
-                                    id="request"
-                                    placeholder="Share your request here..."
+                            {/* Title Field - Required */}
+                            <div className="space-y-2">
+                                <Label htmlFor="title" className="text-base font-medium">
+                                    Title <span className="text-red-500">*</span>
+                                </Label>
+                                <Input
+                                    id="title"
+                                    placeholder="Brief title for your request"
                                     required
-                                    rows={6}
-                                    className="resize-none text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors p-4"
-                                    value={formData.request}
+                                    className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                    value={formData.title}
                                     onChange={handleChange}
                                 />
                             </div>
 
+                            {/* Name & Email - Conditional */}
+                            <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-opacity duration-300 ${formData.isAnonymous ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+                                <div className="space-y-2">
+                                    <Label htmlFor="requesterName" className="text-base font-medium">
+                                        Name {!formData.isAnonymous && <span className="text-red-500">*</span>}
+                                    </Label>
+                                    <Input
+                                        id="requesterName"
+                                        placeholder="Your Name"
+                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                        value={formData.requesterName}
+                                        onChange={handleChange}
+                                        disabled={formData.isAnonymous}
+                                        required={!formData.isAnonymous}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="requesterEmail" className="text-base font-medium">
+                                        Email <span className="text-muted-foreground font-normal">(Optional)</span>
+                                    </Label>
+                                    <Input
+                                        id="requesterEmail"
+                                        type="email"
+                                        placeholder="Your Email"
+                                        className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors"
+                                        value={formData.requesterEmail}
+                                        onChange={handleChange}
+                                        disabled={formData.isAnonymous}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Category - Optional */}
+                            <div className="space-y-2">
+                                <Label htmlFor="category" className="text-base font-medium">
+                                    Category <span className="text-muted-foreground font-normal">(Optional)</span>
+                                </Label>
+                                <Select onValueChange={handleCategoryChange} value={formData.category}>
+                                    <SelectTrigger className="h-12 text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors">
+                                        <SelectValue placeholder="Select a category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="health">Health & Healing</SelectItem>
+                                        <SelectItem value="family">Family</SelectItem>
+                                        <SelectItem value="financial">Financial</SelectItem>
+                                        <SelectItem value="spiritual">Spiritual Growth</SelectItem>
+                                        <SelectItem value="relationships">Relationships</SelectItem>
+                                        <SelectItem value="work">Work/Career</SelectItem>
+                                        <SelectItem value="grief">Grief & Loss</SelectItem>
+                                        <SelectItem value="thanksgiving">Thanksgiving</SelectItem>
+                                        <SelectItem value="guidance">Guidance & Wisdom</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Description - Required */}
+                            <div className="space-y-2">
+                                <Label htmlFor="description" className="text-base font-medium">
+                                    Prayer Request <span className="text-red-500">*</span>
+                                </Label>
+                                <Textarea
+                                    id="description"
+                                    placeholder="Share your prayer request here..."
+                                    required
+                                    rows={5}
+                                    className="resize-none text-lg bg-secondary/20 border-border/50 focus:bg-white transition-colors p-4"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Submit Button */}
                             <Button
                                 type="submit"
                                 className="w-full text-lg py-6 rounded-xl shadow-lg hover:shadow-primary/25 transition-all duration-300"
@@ -164,9 +206,18 @@ export default function PrayerRequest() {
                                 )}
                             </Button>
 
+                            {/* Success Message */}
                             {status === "success" && (
                                 <div className="p-4 bg-green-50 text-green-700 rounded-xl text-center font-medium animate-in fade-in slide-in-from-bottom-2 border border-green-100">
                                     Your prayer request has been received. We will be praying for you!
+                                </div>
+                            )}
+
+                            {/* Error Message */}
+                            {status === "error" && errorMessage && (
+                                <div className="p-4 bg-red-50 text-red-700 rounded-xl text-center font-medium animate-in fade-in slide-in-from-bottom-2 border border-red-100 flex items-center justify-center gap-2">
+                                    <AlertCircle className="h-5 w-5" />
+                                    {errorMessage}
                                 </div>
                             )}
                         </form>
