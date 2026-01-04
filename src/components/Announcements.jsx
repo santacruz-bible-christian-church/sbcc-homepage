@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Calendar, ArrowRight, MapPin, Loader2, Clock } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Calendar, ArrowRight, Loader2 } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -19,7 +19,8 @@ export default function Announcements() {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const data = await api.getAnnouncements();
+                // Fetch only 3 announcements for homepage preview
+                const data = await api.getAnnouncements({ limit: 3 });
                 setAnnouncements(data);
             } catch (error) {
                 console.error("Failed to fetch announcements:", error);
@@ -31,22 +32,36 @@ export default function Announcements() {
         fetchAnnouncements();
     }, []);
 
-    // Helper to format date for the date box
+    // Helper to format date for the date box (uses publish_at from backend)
     const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        // Fallback if date parsing fails or if it's just a string like "Oct 15, 2023"
-        // We'll try to parse the string manually if it's in a standard format, otherwise just return placeholders
-
-        // Simple parsing for "Month Day, Year" format commonly used in mock data
-        const parts = dateString.split(' ');
-        if (parts.length >= 2) {
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return { month: '---', day: '--' };
+            }
             return {
-                month: parts[0].substring(0, 3).toUpperCase(),
-                day: parts[1].replace(',', '')
+                month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+                day: date.getDate().toString()
             };
+        } catch {
+            return { month: '---', day: '--' };
         }
+    };
 
-        return { month: 'NOV', day: '01' }; // Fallback
+    // Helper to format full date display
+    const formatFullDate = (dateString) => {
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        } catch {
+            return dateString;
+        }
     };
 
     return (
@@ -64,44 +79,47 @@ export default function Announcements() {
                     <div className="flex justify-center py-12">
                         <Loader2 className="w-12 h-12 animate-spin text-primary" />
                     </div>
+                ) : announcements.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground text-lg">No announcements at this time. Check back soon!</p>
+                    </div>
                 ) : (
-                    <div className="max-w-4xl mx-auto space-y-8">
+                    <div className="max-w-4xl mx-auto space-y-6">
                         {announcements.map((item) => {
-                            const dateObj = formatDate(item.date);
+                            // Use publish_at for date display
+                            const dateObj = formatDate(item.publish_at);
 
                             return (
-                                <div key={item.id} className="group flex flex-col md:flex-row gap-6 md:gap-10 p-6 md:p-8 rounded-2xl border border-neutral-100 bg-white hover:border-primary/20 hover:shadow-lg transition-all duration-300">
+                                <div key={item.id} className="group flex flex-col md:flex-row gap-6 md:gap-8 p-6 md:p-8 rounded-2xl border border-neutral-100 bg-white hover:border-primary/20 hover:shadow-lg transition-all duration-300">
                                     {/* Date Box */}
                                     <div className="flex-shrink-0 flex md:flex-col items-center justify-center md:justify-start gap-3 md:gap-1">
                                         <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/5 rounded-2xl flex flex-col items-center justify-center text-primary border border-primary/10 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                                             <span className="text-xs md:text-sm font-bold tracking-wider uppercase">{dateObj.month}</span>
                                             <span className="text-2xl md:text-3xl font-bold leading-none">{dateObj.day}</span>
                                         </div>
-                                        <div className="md:hidden flex flex-col">
-                                            <span className="text-sm text-muted-foreground font-medium">{item.date}</span>
-                                        </div>
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-grow">
-                                        <div className="flex flex-wrap items-center gap-3 mb-3">
-                                            <Badge variant="secondary" className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                                                {item.category}
-                                            </Badge>
-                                            {item.location && (
-                                                <div className="flex items-center text-sm text-muted-foreground">
-                                                    <MapPin className="w-3.5 h-3.5 mr-1" />
-                                                    {item.location}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <h3 className="text-2xl font-bold font-serif text-foreground mb-3 group-hover:text-primary transition-colors">
+                                        <h3 className="text-xl md:text-2xl font-bold font-serif text-foreground mb-2 group-hover:text-primary transition-colors">
                                             {item.title}
                                         </h3>
 
-                                        <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-2">
-                                            {item.description}
+                                        <div className="flex flex-wrap items-center gap-3 mb-3 text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-1.5">
+                                                <Calendar className="w-4 h-4" />
+                                                {formatFullDate(item.publish_at)}
+                                            </div>
+                                            {item.ministry_name && (
+                                                <span className="text-primary/80 font-medium">
+                                                    {item.ministry_name}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Use body field from backend */}
+                                        <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
+                                            {item.body}
                                         </p>
 
                                         <Dialog>
@@ -113,27 +131,22 @@ export default function Announcements() {
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-[600px]">
                                                 <DialogHeader>
-                                                    <div className="flex items-center gap-2 mb-4">
-                                                        <Badge>{item.category}</Badge>
-                                                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                                                            <Calendar className="w-3.5 h-3.5" /> {item.date}
-                                                        </span>
+                                                    <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
+                                                        <Calendar className="w-4 h-4" />
+                                                        {formatFullDate(item.publish_at)}
+                                                        {item.ministry_name && (
+                                                            <>
+                                                                <span className="text-border">•</span>
+                                                                <span className="text-primary/80 font-medium">{item.ministry_name}</span>
+                                                            </>
+                                                        )}
                                                     </div>
-                                                    <DialogTitle className="text-3xl font-serif font-bold mb-2">{item.title}</DialogTitle>
+                                                    <DialogTitle className="text-2xl md:text-3xl font-serif font-bold">{item.title}</DialogTitle>
                                                 </DialogHeader>
 
-                                                <div className="space-y-6 py-4">
-                                                    {item.location && (
-                                                        <div className="flex items-center gap-2 text-muted-foreground bg-secondary/30 p-3 rounded-lg">
-                                                            <MapPin className="w-5 h-5 text-primary" />
-                                                            <span className="font-medium">Location: {item.location}</span>
-                                                        </div>
-                                                    )}
-
-                                                    <DialogDescription className="text-lg text-foreground leading-relaxed whitespace-pre-line">
-                                                        {item.description}
-                                                    </DialogDescription>
-                                                </div>
+                                                <DialogDescription className="text-base text-foreground leading-relaxed whitespace-pre-line pt-4">
+                                                    {item.body}
+                                                </DialogDescription>
                                             </DialogContent>
                                         </Dialog>
                                     </div>
@@ -144,8 +157,11 @@ export default function Announcements() {
                 )}
 
                 <div className="mt-16 text-center">
-                    <Button variant="outline" size="lg" className="rounded-full px-8 py-6 text-lg border-2 hover:bg-secondary/50">
-                        View All Events
+                    <Button asChild variant="outline" size="lg" className="rounded-full px-8 py-6 text-lg border-2 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
+                        <Link to="/announcements" className="flex items-center gap-2">
+                            View All Announcements
+                            <ArrowRight className="w-5 h-5" />
+                        </Link>
                     </Button>
                 </div>
             </div>
