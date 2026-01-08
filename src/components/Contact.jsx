@@ -1,7 +1,22 @@
 import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function Contact() {
+    const { settings } = useSettings();
+
+    // Parse address for display (handles newlines)
+    const formatMultiline = (text) => {
+        if (!text) return null;
+        const lines = text.split('\n').filter(line => line.trim());
+        return lines.map((line, i) => (
+            <span key={i}>
+                {line.trim()}
+                {i < lines.length - 1 && <br />}
+            </span>
+        ));
+    };
+
     return (
         <section id="contact" className="py-24 bg-secondary/30">
             <div className="container mx-auto px-4">
@@ -20,9 +35,11 @@ export default function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold mb-2">Visit Us</h3>
-                                    <p className="text-muted-foreground text-lg mb-2">440 Frederick St<br />Santa Cruz, CA 95062</p>
+                                    <p className="text-muted-foreground text-lg mb-2">
+                                        {formatMultiline(settings.address) || '440 Frederick St, Santa Cruz, CA 95062'}
+                                    </p>
                                     <Button variant="link" className="p-0 h-auto text-primary" asChild>
-                                        <a href="https://maps.app.goo.gl/CTgBGvkDv6m7sLpy9" target="_blank" rel="noopener noreferrer">Get Directions &rarr;</a>
+                                        <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.address?.replace(/\n/g, ', ') || '')}`} target="_blank" rel="noopener noreferrer">Get Directions &rarr;</a>
                                     </Button>
                                 </div>
                             </div>
@@ -35,8 +52,8 @@ export default function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold mb-2">Service Times</h3>
-                                    <div className="space-y-1 text-muted-foreground text-lg">
-                                        <p><span className="font-medium text-foreground">Sunday Worship:</span> 9:00 AM - 11:00 AM</p>
+                                    <div className="text-muted-foreground text-lg">
+                                        {formatMultiline(settings.service_schedule) || 'Sunday Worship: 9:00 AM - 11:00 AM'}
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +65,7 @@ export default function Contact() {
                                     <Phone className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-1">Call Us</h3>
-                                <p className="text-muted-foreground">(+63) 917-222-2222</p>
+                                <p className="text-muted-foreground">{settings.phone || '(+63) 917-222-2222'}</p>
                             </div>
 
                             <div className="bg-white p-6 rounded-2xl shadow-sm border border-border/50 hover:shadow-md transition-shadow">
@@ -56,22 +73,42 @@ export default function Contact() {
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-lg font-bold mb-1">Email Us</h3>
-                                <p className="text-muted-foreground">1992.sbcc@gmail.com</p>
+                                <p className="text-muted-foreground">{settings.email || '1992.sbcc@gmail.com'}</p>
                             </div>
                         </div>
 
                         <div className="pt-4">
                             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
                             <div className="flex gap-4">
-                                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
-                                    <Facebook size={22} />
-                                </a>
-                                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
-                                    <Instagram size={22} />
-                                </a>
-                                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
-                                    <Youtube size={22} />
-                                </a>
+                                {settings.facebook_url && (
+                                    <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                        <Facebook size={22} />
+                                    </a>
+                                )}
+                                {settings.instagram_url && (
+                                    <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                        <Instagram size={22} />
+                                    </a>
+                                )}
+                                {settings.youtube_url && (
+                                    <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                        <Youtube size={22} />
+                                    </a>
+                                )}
+                                {/* Show placeholder icons if no social URLs configured */}
+                                {!settings.facebook_url && !settings.instagram_url && !settings.youtube_url && (
+                                    <>
+                                        <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                            <Facebook size={22} />
+                                        </a>
+                                        <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                            <Instagram size={22} />
+                                        </a>
+                                        <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-border/50 hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 text-foreground">
+                                            <Youtube size={22} />
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -79,7 +116,7 @@ export default function Contact() {
                     {/* Map */}
                     <div className="h-[500px] lg:h-auto bg-muted rounded-2xl overflow-hidden shadow-lg border border-border relative">
                         <iframe
-                            src="https://maps.google.com/maps?q=Santa+Cruz+Bible+Christian+Church,+Santa+Cruz,+Philippines&output=embed"
+                            src={`https://maps.google.com/maps?q=${encodeURIComponent(settings.church_name || 'Santa Cruz Bible Christian Church, Santa Cruz, Philippines')}&output=embed`}
                             width="100%"
                             height="100%"
                             style={{ border: 0 }}

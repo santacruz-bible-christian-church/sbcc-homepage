@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function Hero() {
+    const { settings } = useSettings();
     return (
         <section id="home" className="relative h-screen min-h-[700px] flex items-center justify-center text-center text-white overflow-hidden">
             {/* Background Image with Parallax Effect */}
@@ -28,12 +30,12 @@ export default function Hero() {
                 <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1] animate-in fade-in slide-in-from-bottom-8 duration-1000 drop-shadow-2xl tracking-tight" style={{ animationDelay: "300ms" }}>
                     <span className="block text-3xl md:text-4xl lg:text-5xl font-light mb-2 text-white/90 font-sans tracking-normal">Welcome to</span>
                     <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/80">
-                        Santa Cruz Bible Christian Church
+                        {settings.church_name}
                     </span>
                 </h1>
 
                 <p className="text-lg md:text-2xl mb-12 text-white/80 max-w-3xl mx-auto font-light leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 drop-shadow-md" style={{ animationDelay: "600ms" }}>
-                    Growing in Faith, Serving the Community. <br className="hidden md:block" />
+                    {settings.tagline} <br className="hidden md:block" />
                     Join us for worship, prayer, and fellowship.
                 </p>
 

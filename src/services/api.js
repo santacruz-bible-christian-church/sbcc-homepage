@@ -126,10 +126,29 @@ async function getEvents({ limit, eventType, timeFilter = 'upcoming' } = {}) {
         return [];
     }
 }
+/**
+ * Fetch public settings from the SBCCMS backend
+ * @returns {Promise<Object>} System settings
+ */
+async function getSettings() {
+    try {
+        const url = `${API_URL}/public/settings/`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch settings:', error);
+        throw error;
+    }
+}
 
 export const api = {
     getAnnouncements,
     submitPrayerRequest,
     getEvents,
+    getSettings,
 };
-
