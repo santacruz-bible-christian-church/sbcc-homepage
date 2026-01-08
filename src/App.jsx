@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Announcements from "@/components/Announcements";
@@ -29,13 +30,15 @@ function HomePage() {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/announcements" element={<AnnouncementsPage />} />
-        <Route path="/events" element={<EventsPage />} />
-      </Routes>
-    </Router>
+    <SettingsProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/announcements" element={<AnnouncementsPage />} />
+          <Route path="/events" element={<EventsPage />} />
+        </Routes>
+      </Router>
+    </SettingsProvider>
   );
 }
 

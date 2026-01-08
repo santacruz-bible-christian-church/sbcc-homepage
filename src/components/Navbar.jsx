@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function Navbar() {
+    const { settings } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("home");
     const [scrolled, setScrolled] = useState(false);
@@ -54,8 +56,8 @@ export default function Navbar() {
                 <a href="/" className="flex items-center gap-3 group relative z-10">
                     <div className="relative overflow-hidden rounded-full">
                         <img
-                            src="/assets/sbcc-logo.png"
-                            alt="SBCC Logo"
+                            src={settings.logo || "/assets/sbcc-logo.png"}
+                            alt={`${settings.app_name} Logo`}
                             className="h-10 w-auto transition-transform duration-500 group-hover:scale-110"
                         />
                     </div>
@@ -63,7 +65,7 @@ export default function Navbar() {
                         "font-serif text-xl font-bold tracking-tight transition-colors duration-300",
                         scrolled ? "text-primary" : "text-white"
                     )}>
-                        SBCC
+                        {settings.app_name}
                     </span>
                 </a>
 
@@ -124,8 +126,8 @@ export default function Navbar() {
                             </SheetTrigger>
                             <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col border-l border-white/20 bg-white/95 backdrop-blur-xl">
                                 <SheetTitle className="text-left font-serif text-2xl font-bold text-primary mb-8 flex items-center gap-2">
-                                    <img src="/assets/sbcc-logo.png" alt="Logo" className="h-8 w-auto" />
-                                    SBCC
+                                    <img src={settings.logo || "/assets/sbcc-logo.png"} alt="Logo" className="h-8 w-auto" />
+                                    {settings.app_name}
                                 </SheetTitle>
                                 <nav className="flex flex-col gap-2 flex-1">
                                     {navLinks.map((link, index) => (

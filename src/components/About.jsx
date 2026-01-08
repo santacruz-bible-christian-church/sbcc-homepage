@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Church, CheckCircle2, Users, BookOpen, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function About() {
+    const { settings } = useSettings();
+
+    // Parse statement of faith - could be newline-separated or HTML
+    const statementItems = settings.statement_of_faith
+        ? settings.statement_of_faith.split('\n').filter(line => line.trim())
+        : [];
+
     return (
         <section id="about" className="py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
@@ -13,17 +21,17 @@ export default function About() {
                         <div className="relative h-[500px] bg-neutral-100 rounded-2xl overflow-hidden shadow-2xl border border-border">
                             <img 
                                 src="/assets/church-building.jpg" 
-                                alt="Santa Cruz Bible Christian Church Building"
+                                alt={`${settings.church_name} Building`}
                                 className="w-full h-full object-cover"
                             />
                         </div>
 
                         <div className="absolute -bottom-8 -right-8 bg-white p-6 rounded-xl shadow-xl border border-border max-w-xs hidden md:block">
                             <div className="flex items-center gap-4 mb-2">
-                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">69+</div>
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">33+</div>
                                 <div>
                                     <p className="font-bold text-foreground">Years of Service</p>
-                                    <p className="text-sm text-muted-foreground">Serving Santa Cruz since 1956</p>
+                                    <p className="text-sm text-muted-foreground">Serving Santa Cruz since 1992</p>
                                 </div>
                             </div>
                         </div>
@@ -34,7 +42,7 @@ export default function About() {
                             <h4 className="text-primary font-bold tracking-wide uppercase text-sm mb-2">Who We Are</h4>
                             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">A Community of Faith, Hope, and Love</h2>
                             <p className="text-lg text-muted-foreground leading-relaxed">
-                                Founded in 1956, Santa Cruz Bible Christian Church has been a beacon of hope in our city for nearly seven decades. We started as a small bible study group and have grown into a vibrant family of believers dedicated to living out the Gospel.
+                                {settings.history || "Founded in 1992, Santa Cruz Bible Christian Church has been a beacon of hope in our city for over three decades. We started as a small bible study group and have grown into a vibrant family of believers dedicated to living out the Gospel."}
                             </p>
                         </div>
 
@@ -45,7 +53,7 @@ export default function About() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold mb-1">Our Mission</h3>
-                                    <p className="text-muted-foreground">To know Christ and make Him known through worship, discipleship, and service.</p>
+                                    <p className="text-muted-foreground">{settings.mission}</p>
                                 </div>
                             </div>
 
@@ -55,7 +63,7 @@ export default function About() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold mb-1">Our Vision</h3>
-                                    <p className="text-muted-foreground">To see our city transformed by the love and power of the Gospel, one life at a time.</p>
+                                    <p className="text-muted-foreground">{settings.vision}</p>
                                 </div>
                             </div>
                         </div>
@@ -77,22 +85,33 @@ export default function About() {
                             <h3 className="text-2xl font-bold font-serif">Statement of Faith</h3>
                         </div>
                         <ul className="space-y-4 text-muted-foreground">
-                            <li className="flex gap-3">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
-                                We believe in the Holy Scriptures as the inspired and authoritative Word of God.
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
-                                We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
-                                We believe in the deity of our Lord Jesus Christ, His virgin birth, His sinless life, His miracles, His vicarious and atoning death, His bodily resurrection, and His ascension.
-                            </li>
-                            <li className="flex gap-3">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
-                                We believe in the spiritual unity of believers in our Lord Jesus Christ.
-                            </li>
+                            {statementItems.length > 0 ? (
+                                statementItems.map((item, index) => (
+                                    <li key={index} className="flex gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+                                        {item}
+                                    </li>
+                                ))
+                            ) : (
+                                <>
+                                    <li className="flex gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+                                        We believe in the Holy Scriptures as the inspired and authoritative Word of God.
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+                                        We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+                                        We believe in the deity of our Lord Jesus Christ, His virgin birth, His sinless life, His miracles, His vicarious and atoning death, His bodily resurrection, and His ascension.
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0"></span>
+                                        We believe in the spiritual unity of believers in our Lord Jesus Christ.
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </div>
 
