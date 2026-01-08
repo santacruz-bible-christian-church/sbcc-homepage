@@ -169,9 +169,11 @@ sbcc-homepage/
 
 ## 🔗 Related Projects
 
-| Project                                                               | Description                  |
-| :-------------------------------------------------------------------- | :--------------------------- |
-| [SBCC Management System](https://github.com/emperuna/sbcc-management) | Backend management dashboard |
+| Project                  | Description                  |
+| :----------------------- | :--------------------------- |
+| [SBCC Management System] | Backend management dashboard |
+
+[SBCC Management System]: https://github.com/santacruz-bible-christian-church/sbcc-management-system
 
 ---
 
