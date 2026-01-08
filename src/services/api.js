@@ -88,7 +88,48 @@ async function submitPrayerRequest(data) {
     }
 }
 
+/**
+ * Fetch public events from the SBCCMS backend
+ * @param {Object} options - Query options
+ * @param {number} [options.limit] - Maximum number of events to fetch
+ * @param {string} [options.eventType] - Filter by event type (e.g., 'service')
+ * @param {string} [options.timeFilter] - Filter: 'upcoming', 'past', or 'all' (default: 'upcoming')
+ * @returns {Promise<Array>} List of events
+ */
+async function getEvents({ limit, eventType, timeFilter = 'upcoming' } = {}) {
+    try {
+        const params = new URLSearchParams();
+        params.append('time_filter', timeFilter);
+        if (limit) params.append('limit', limit.toString());
+        if (eventType) params.append('event_type', eventType);
+
+        const queryString = params.toString();
+        const url = `${API_URL}/public/events/?${queryString}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const results = data.results || [];
+        
+        // Backend sorts by -date (descending). For upcoming events, reverse to show soonest first
+        if (timeFilter === 'upcoming') {
+            return results.reverse();
+        }
+        
+        return results;
+    } catch (error) {
+        console.error('Failed to fetch events:', error);
+        return [];
+    }
+}
+
 export const api = {
     getAnnouncements,
     submitPrayerRequest,
+    getEvents,
 };
+
