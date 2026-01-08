@@ -296,7 +296,7 @@ export default function EventsPage() {
                                                     acc[group.year].push(group);
                                                     return acc;
                                                 }, {})
-                                            ).map(([year, groups]) => (
+                                            ).sort((a, b) => b[0] - a[0]).map(([year, groups]) => (
                                                 <div key={year}>
                                                     <h4 className="text-xs font-semibold text-muted-foreground mb-2 pl-3">{year}</h4>
                                                     <div className="space-y-1">
