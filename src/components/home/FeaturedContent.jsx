@@ -31,8 +31,38 @@ export default function FeaturedContent() {
     if (loading) {
         return (
             <section id="featured" className="py-24 md:py-32 bg-secondary">
-                <div className="container mx-auto px-6 flex justify-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <div className="container mx-auto px-6">
+                    {/* Skeleton Header */}
+                    <div className="max-w-3xl mx-auto text-center mb-16">
+                        <div className="h-4 w-32 bg-muted rounded mx-auto mb-4 animate-pulse" />
+                        <div className="h-10 w-64 bg-muted rounded mx-auto mb-4 animate-pulse" />
+                        <div className="h-5 w-48 bg-muted rounded mx-auto animate-pulse" />
+                    </div>
+
+                    {/* Skeleton Bento Grid */}
+                    <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Large Card Skeleton */}
+                        <div className="lg:col-span-7 bg-muted rounded-2xl min-h-[400px] animate-pulse" />
+
+                        {/* Right Column Skeletons */}
+                        <div className="lg:col-span-5 flex flex-col gap-6">
+                            <div className="flex-1 bg-white border border-border/50 rounded-2xl p-6 animate-pulse">
+                                <div className="flex justify-between mb-4">
+                                    <div className="w-11 h-11 bg-muted rounded-xl" />
+                                    <div className="w-14 h-14 bg-muted rounded-xl" />
+                                </div>
+                                <div className="h-3 w-24 bg-muted rounded mb-3" />
+                                <div className="h-6 w-full bg-muted rounded mb-2" />
+                                <div className="h-4 w-32 bg-muted rounded" />
+                            </div>
+                            <div className="flex-1 bg-primary/5 border border-primary/10 rounded-2xl p-6 animate-pulse">
+                                <div className="w-11 h-11 bg-muted rounded-xl mb-4" />
+                                <div className="h-3 w-24 bg-muted rounded mb-3" />
+                                <div className="h-6 w-full bg-muted rounded mb-2" />
+                                <div className="h-4 w-48 bg-muted rounded" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         );
