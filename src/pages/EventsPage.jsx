@@ -138,9 +138,40 @@ export default function EventsPage() {
             <section className="py-16 md:py-24">
                 <div className="container mx-auto px-6">
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center py-20 gap-4">
-                            <Loader2 className="w-10 h-10 animate-spin text-primary" />
-                            <p className="text-muted-foreground text-sm">Loading events...</p>
+                        <div className="max-w-5xl mx-auto">
+                            {/* Featured Skeleton */}
+                            <div className="mb-16">
+                                <div className="h-4 w-24 bg-muted rounded mb-6 animate-pulse" />
+                                <div className="bg-white border-l-4 border-l-primary border border-border/50 rounded-2xl p-8 animate-pulse">
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                        <div className="w-20 h-20 bg-muted rounded-2xl flex-shrink-0" />
+                                        <div className="flex-grow">
+                                            <div className="h-4 w-32 bg-muted rounded mb-3" />
+                                            <div className="h-8 w-3/4 bg-muted rounded mb-4" />
+                                            <div className="flex gap-4 mb-4">
+                                                <div className="h-4 w-20 bg-muted rounded" />
+                                                <div className="h-4 w-28 bg-muted rounded" />
+                                            </div>
+                                            <div className="h-4 w-full bg-muted rounded" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Timeline Skeleton */}
+                            <div className="space-y-4">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="bg-white border border-border/50 rounded-xl p-5 animate-pulse">
+                                        <div className="flex gap-4">
+                                            <div className="w-14 h-14 bg-muted rounded-xl flex-shrink-0" />
+                                            <div className="flex-grow">
+                                                <div className="h-5 w-2/3 bg-muted rounded mb-2" />
+                                                <div className="h-3 w-1/3 bg-muted rounded" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ) : events.length === 0 ? (
                         <div className="text-center py-20 max-w-md mx-auto">
