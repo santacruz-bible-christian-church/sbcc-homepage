@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Target, Eye, BookOpen, Quote } from "lucide-react";
+import { ArrowLeft, Target, Eye, BookOpen, Quote, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useTeam } from "@/hooks";
 
 export default function AboutPage() {
     const { settings } = useSettings();
+    const { team, loading: teamLoading } = useTeam();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -168,10 +170,10 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Leadership */}
+            {/* Leadership / Our Team */}
             <section className="py-20 md:py-28 bg-gradient-to-b from-secondary/30 to-background">
                 <div className="container mx-auto px-6">
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-5xl mx-auto">
                         <div className="text-center mb-12">
                             <div className="inline-flex items-center gap-3 mb-4">
                                 <div className="w-8 h-[2px] bg-primary" />
@@ -183,16 +185,80 @@ export default function AboutPage() {
                             </h2>
                         </div>
 
-                        <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-border/50 max-w-md mx-auto text-center">
-                            <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
-                                DB
+                        {teamLoading ? (
+                            <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-border/50 max-w-md mx-auto text-center animate-pulse">
+                                <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-6" />
+                                <div className="h-6 w-32 bg-muted rounded mx-auto mb-2" />
+                                <div className="h-4 w-24 bg-muted rounded mx-auto mb-4" />
+                                <div className="h-3 w-full bg-muted rounded mb-2" />
+                                <div className="h-3 w-2/3 bg-muted rounded mx-auto" />
                             </div>
-                            <h3 className="text-2xl font-bold text-foreground mb-1">Dennis Badillo</h3>
-                            <p className="text-primary font-medium mb-2">Senior Pastor</p>
-                            <p className="text-sm text-muted-foreground">
-                                Serving our congregation with dedication and love since 2010.
-                            </p>
-                        </div>
+                        ) : team.length === 0 ? (
+                            <div className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-border/50 max-w-md mx-auto text-center">
+                                <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <User className="w-10 h-10 text-muted-foreground" />
+                                </div>
+                                <p className="text-muted-foreground">Team information coming soon.</p>
+                            </div>
+                        ) : team.length <= 3 ? (
+                            /* Centered layout for 1-3 members */
+                            <div className="flex flex-wrap justify-center gap-6 animate-in fade-in duration-500">
+                                {team.map(member => (
+                                    <div key={member.id} className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-border/50 text-center w-full max-w-[300px] transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                                        {member.photo ? (
+                                            <img 
+                                                src={member.photo} 
+                                                alt={member.name}
+                                                className="w-24 h-24 rounded-full object-cover mx-auto mb-6 border-4 border-primary/20"
+                                            />
+                                        ) : (
+                                            <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
+                                                {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                            </div>
+                                        )}
+                                        <h3 className="text-2xl font-bold text-foreground mb-1">
+                                            {member.name}
+                                        </h3>
+                                        <p className="text-primary font-medium mb-2">{member.title || member.role_display}</p>
+                                        {member.bio && (
+                                            <p className="text-sm text-muted-foreground line-clamp-3">
+                                                {member.bio}
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            /* Carousel layout for 4+ members */
+                            <div className="overflow-x-auto pb-4 -mx-6 px-6 animate-in fade-in duration-500">
+                                <div className="flex gap-6 snap-x snap-mandatory">
+                                    {team.map(member => (
+                                        <div key={member.id} className="bg-white dark:bg-neutral-900 rounded-2xl p-8 shadow-sm border border-border/50 text-center flex-shrink-0 w-[300px] snap-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                                            {member.photo ? (
+                                                <img 
+                                                    src={member.photo} 
+                                                    alt={member.name}
+                                                    className="w-24 h-24 rounded-full object-cover mx-auto mb-6 border-4 border-primary/20"
+                                                />
+                                            ) : (
+                                                <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
+                                                    {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                                </div>
+                                            )}
+                                            <h3 className="text-2xl font-bold text-foreground mb-1">
+                                                {member.name}
+                                            </h3>
+                                            <p className="text-primary font-medium mb-2">{member.title || member.role_display}</p>
+                                            {member.bio && (
+                                                <p className="text-sm text-muted-foreground line-clamp-3">
+                                                    {member.bio}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
