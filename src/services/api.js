@@ -146,9 +146,30 @@ async function getSettings() {
     }
 }
 
+/**
+ * Fetch team members from the SBCCMS backend
+ * @returns {Promise<Array>} List of team members
+ */
+async function getTeam() {
+    try {
+        const url = `${API_URL}/public/team/`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch team:', error);
+        return [];
+    }
+}
+
 export const api = {
     getAnnouncements,
     submitPrayerRequest,
     getEvents,
     getSettings,
+    getTeam,
 };
