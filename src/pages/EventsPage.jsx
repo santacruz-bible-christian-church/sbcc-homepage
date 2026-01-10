@@ -91,7 +91,7 @@ export default function EventsPage() {
                         alt="Worship Service"
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/50 via-neutral-900/40 to-neutral-950/60" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-neutral-950/30" />
                 </div>
 
                 <div className="relative z-10 container mx-auto px-6 py-24">
@@ -115,21 +115,6 @@ export default function EventsPage() {
                         <p className="text-lg text-white/70 mb-8 max-w-lg mx-auto">
                             Join us for worship, fellowship, and community activities.
                         </p>
-
-                        {/* Stats */}
-                        {!loading && events.length > 0 && (
-                            <div className="flex justify-center gap-8">
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white">{upcomingEvents.length}</div>
-                                    <div className="text-sm text-white/60">Upcoming</div>
-                                </div>
-                                <div className="w-px bg-white/20" />
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white/60">{pastEvents.length}</div>
-                                    <div className="text-sm text-white/60">Completed</div>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </section>
@@ -184,7 +169,7 @@ export default function EventsPage() {
                             </p>
                         </div>
                     ) : (
-                        <div className="max-w-5xl mx-auto">
+                        <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
                             {/* Featured Next Event */}
                             {nextEvent && (
                                 <div className="mb-16">

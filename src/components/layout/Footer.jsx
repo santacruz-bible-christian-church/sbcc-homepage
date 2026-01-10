@@ -25,8 +25,15 @@ export default function Footer() {
                         Experience the warmth of our community. Everyone is welcome!
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <Button asChild size="lg" variant="secondary" className="rounded-full px-8">
-                            <Link to={ROUTES.HOME}>Back to Home</Link>
+                        <Button 
+                            size="lg" 
+                            variant="secondary" 
+                            className="rounded-full px-8"
+                            onClick={() => {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                        >
+                            Back to Top
                         </Button>
                         <Button asChild size="lg" variant="outline" className="rounded-full px-8 bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary hover:border-white">
                             <Link to={ROUTES.EVENTS}>View Events</Link>

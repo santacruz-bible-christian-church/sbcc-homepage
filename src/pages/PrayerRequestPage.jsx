@@ -27,7 +27,7 @@ export default function PrayerRequestPage() {
                         alt="Congregation in Prayer"
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/50 via-neutral-900/40 to-neutral-950/60" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-neutral-950/30" />
                 </div>
 
                 {/* Content - Text Only */}

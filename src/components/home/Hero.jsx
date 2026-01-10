@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
 import { useSettings } from "@/contexts/SettingsContext";
 
 export default function Hero() {
@@ -12,12 +11,12 @@ export default function Hero() {
                 <img
                     src="/assets/hero-worship.jpg"
                     alt="Worship Service"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover scale-110"
                     loading="eager"
                 />
-                {/* Multi-layer gradient for depth */}
-                <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/70 to-neutral-950/40" />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/30" />
+                {/* Multi-layer gradient for depth - slightly stronger overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/95 via-neutral-950/75 to-neutral-950/50" />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-neutral-950/40" />
                 {/* Subtle noise texture overlay */}
                 <div className="absolute inset-0 opacity-[0.03]" style={{
                     backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
