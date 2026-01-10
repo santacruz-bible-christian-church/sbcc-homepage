@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/home/Hero";
 import FeaturedContent from "@/components/home/FeaturedContent";
 import Contact from "@/components/home/Contact";
+import Schedule from "@/components/home/Schedule";
 import Footer from "@/components/layout/Footer";
 import AnnouncementsPage from "@/pages/AnnouncementsPage";
 import EventsPage from "@/pages/EventsPage";
@@ -18,6 +19,7 @@ function HomePage() {
       <main>
         <Hero />
         <FeaturedContent />
+        <Schedule />
         <Contact />
       </main>
       <Footer />
