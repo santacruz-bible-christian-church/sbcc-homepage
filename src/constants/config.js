@@ -5,7 +5,7 @@ export const API_CONFIG = {
 
 // External links
 export const EXTERNAL_LINKS = {
-    MANAGEMENT_SYSTEM: "https://sbcc-app.pages.dev/",
+    MANAGEMENT_SYSTEM: "https://dash.pbcm-sbcc.online/login",
 };
 
 // Hero configuration
