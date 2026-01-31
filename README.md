@@ -123,7 +123,11 @@ npm run dev
 Create a `.env` file in the root directory:
 
 ```env
+# Required: Backend API URL (URL is auto-normalized to include /api suffix)
 VITE_API_URL=https://your-api-url.com
+
+# Optional: Timezone for date formatting (default: Asia/Manila)
+VITE_APP_TIMEZONE=Asia/Manila
 ```
 
 ### Access Points
