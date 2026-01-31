@@ -8,7 +8,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { NAV_LINKS, EXTERNAL_LINKS, HERO_CONFIG } from "@/constants";
 
 export default function Navbar() {
-    const { settings } = useSettings();
+    const { settings, error: settingsError } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
     const [visible, setVisible] = useState(false);
     const [atTop, setAtTop] = useState(true);
@@ -58,9 +58,14 @@ export default function Navbar() {
                     : "bg-white/95 backdrop-blur-md shadow-sm py-3 border-b border-border/50"
             )}
         >
+            {settingsError && (
+                <div className="bg-amber-500/90 text-white text-xs text-center py-1">
+                    Live content is temporarily unavailable. Showing default information.
+                </div>
+            )}
             <div className="container mx-auto px-6 h-12 flex items-center justify-between relative">
                 {/* Logo */}
-                <a href="/" className="flex items-center gap-3 group relative z-10">
+                <Link to="/" className="flex items-center gap-3 group relative z-10">
                     <div className="relative overflow-hidden rounded-full">
                         <img
                             src={settings.logo || "/assets/sbcc-logo.png"}
@@ -74,15 +79,15 @@ export default function Navbar() {
                     )}>
                         {settings.app_name}
                     </span>
-                </a>
+                </Link>
 
                 {/* Desktop Nav - Centered */}
                 <nav className="hidden lg:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                     <div className="flex items-center gap-8 pointer-events-auto">
                         {NAV_LINKS.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.href}
+                                to={link.href}
                                 className={cn(
                                     "text-sm font-medium transition-all duration-300 hover:-translate-y-0.5",
                                     atTop 
@@ -91,7 +96,7 @@ export default function Navbar() {
                                 )}
                             >
                                 {link.name}
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </nav>
@@ -135,15 +140,15 @@ export default function Navbar() {
                                 </SheetTitle>
                                 <nav className="flex flex-col gap-2 flex-1">
                                     {NAV_LINKS.map((link, index) => (
-                                        <a
+                                        <Link
                                             key={link.name}
-                                            href={link.href}
+                                            to={link.href}
                                             className="text-lg font-medium px-4 py-3 rounded-xl transition-all duration-300 text-foreground/70 hover:bg-secondary hover:text-foreground"
                                             onClick={() => setIsOpen(false)}
                                             style={{ transitionDelay: `${index * 50}ms` }}
                                         >
                                             {link.name}
-                                        </a>
+                                        </Link>
                                     ))}
 
                                     <div className="mt-auto mb-8">

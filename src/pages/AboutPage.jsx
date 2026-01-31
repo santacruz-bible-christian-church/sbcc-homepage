@@ -9,7 +9,7 @@ import { useTeam } from "@/hooks";
 
 export default function AboutPage() {
     const { settings } = useSettings();
-    const { team, loading: teamLoading } = useTeam();
+    const { team, loading: teamLoading, error: teamError } = useTeam();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -183,6 +183,11 @@ export default function AboutPage() {
                             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
                                 Church Leadership
                             </h2>
+                            {teamError && (
+                                <p className="text-sm text-amber-600 mt-3">
+                                    Team information is temporarily unavailable. Showing default information.
+                                </p>
+                            )}
                         </div>
 
                         {teamLoading ? (

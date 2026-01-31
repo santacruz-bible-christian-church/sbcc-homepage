@@ -25,12 +25,16 @@ export default function EventsPage() {
     const {
         events,
         loading,
+        error,
         upcomingEvents,
         pastEvents,
         nextEvent,
         groupEventsByMonth,
         isPastEvent,
     } = useEvents({ limit: 50, timeFilter: 'all' });
+    const errorMessage = error?.status === 429
+        ? "You're checking too fast. Please wait a moment and try again."
+        : "We couldn't load events right now. Please try again shortly.";
 
     const [activeMonth, setActiveMonth] = useState(null);
     const sectionRefs = useRef({});
@@ -157,6 +161,16 @@ export default function EventsPage() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                    ) : error ? (
+                        <div className="text-center py-20 max-w-md mx-auto">
+                            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                                <CalendarDays className="w-10 h-10 text-muted-foreground" />
+                            </div>
+                            <h3 className="text-2xl font-serif font-bold mb-3">Unable to Load Events</h3>
+                            <p className="text-muted-foreground">
+                                {errorMessage}
+                            </p>
                         </div>
                     ) : events.length === 0 ? (
                         <div className="text-center py-20 max-w-md mx-auto">

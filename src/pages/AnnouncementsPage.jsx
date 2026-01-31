@@ -20,7 +20,10 @@ import {
 
 export default function AnnouncementsPage() {
     useScrollToTop();
-    const { announcements, loading, featuredAnnouncement, restAnnouncements } = useAnnouncements({ limit: 20 });
+    const { announcements, loading, error, featuredAnnouncement, restAnnouncements } = useAnnouncements({ limit: 20 });
+    const errorMessage = error?.status === 429
+        ? "You're checking too fast. Please wait a moment and try again."
+        : "We couldn't load announcements right now. Please try again shortly.";
 
     return (
         <div className="min-h-screen bg-background font-sans antialiased">
@@ -103,6 +106,16 @@ export default function AnnouncementsPage() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                    ) : error ? (
+                        <div className="text-center py-20 max-w-md mx-auto">
+                            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Megaphone className="w-10 h-10 text-muted-foreground" />
+                            </div>
+                            <h3 className="text-2xl font-serif font-bold mb-3">Unable to Load Announcements</h3>
+                            <p className="text-muted-foreground">
+                                {errorMessage}
+                            </p>
                         </div>
                     ) : announcements.length === 0 ? (
                         <div className="text-center py-20 max-w-md mx-auto">

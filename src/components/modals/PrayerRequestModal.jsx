@@ -27,6 +27,7 @@ export default function PrayerRequestModal({ open, onOpenChange }) {
         title: "",
         requesterName: "",
         requesterEmail: "",
+        requesterPhone: "",
         category: "",
         description: "",
         isAnonymous: false
@@ -42,7 +43,13 @@ export default function PrayerRequestModal({ open, onOpenChange }) {
     };
 
     const handleAnonymousChange = (checked) => {
-        setFormData(prev => ({ ...prev, isAnonymous: checked }));
+        setFormData(prev => ({
+            ...prev,
+            isAnonymous: checked,
+            ...(checked
+                ? { requesterName: "", requesterEmail: "", requesterPhone: "" }
+                : {})
+        }));
     };
 
     const resetForm = () => {
@@ -50,6 +57,7 @@ export default function PrayerRequestModal({ open, onOpenChange }) {
             title: "",
             requesterName: "",
             requesterEmail: "",
+            requesterPhone: "",
             category: "",
             description: "",
             isAnonymous: false
@@ -79,7 +87,30 @@ export default function PrayerRequestModal({ open, onOpenChange }) {
         } catch (error) {
             console.error("Failed to submit prayer request:", error);
             setStatus("error");
-            setErrorMessage("Failed to send request. Please try again.");
+            const status = error?.status;
+            const data = error?.data;
+            const extractValidationMessage = () => {
+                if (!data) return null;
+                if (typeof data === 'string') return data;
+                if (typeof data?.detail === 'string') return data.detail;
+                if (typeof data?.message === 'string') return data.message;
+                if (typeof data === 'object') {
+                    const [firstKey] = Object.keys(data);
+                    const value = data[firstKey];
+                    if (Array.isArray(value) && value[0]) return `${firstKey}: ${value[0]}`;
+                    if (typeof value === 'string') return `${firstKey}: ${value}`;
+                }
+                return null;
+            };
+
+            if (status === 429) {
+                setErrorMessage("Too many requests right now. Please wait a moment and try again.");
+            } else if (status === 400) {
+                const validationMessage = extractValidationMessage();
+                setErrorMessage(validationMessage ? `Please check your submission. ${validationMessage}` : "Please check your submission and try again.");
+            } else {
+                setErrorMessage("Failed to send request. Please try again.");
+            }
         }
     };
 
@@ -153,6 +184,22 @@ export default function PrayerRequestModal({ open, onOpenChange }) {
                                 disabled={formData.isAnonymous}
                             />
                         </div>
+                    </div>
+
+                    {/* Phone */}
+                    <div className={`space-y-2 transition-opacity ${formData.isAnonymous ? 'opacity-40 pointer-events-none' : ''}`}>
+                        <Label htmlFor="requesterPhone">
+                            Phone <span className="text-muted-foreground font-normal text-xs">(Optional)</span>
+                        </Label>
+                        <Input
+                            id="requesterPhone"
+                            type="tel"
+                            placeholder="Your Phone"
+                            className="h-11"
+                            value={formData.requesterPhone}
+                            onChange={handleChange}
+                            disabled={formData.isAnonymous}
+                        />
                     </div>
 
                     {/* Category */}
