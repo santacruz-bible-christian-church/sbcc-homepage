@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/contexts/SettingsContext";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
     const { settings } = useSettings();
@@ -58,9 +59,9 @@ export default function Hero() {
                                 </a>
                             </Button>
                             <Button asChild variant="outline" size="lg" className="text-base px-8 py-6 rounded-full border-white/20 bg-white/5 backdrop-blur-sm text-white hover:bg-white hover:text-neutral-900 transition-all duration-300">
-                                <a href="/about">
+                                <Link to="/about">
                                     Learn More
-                                </a>
+                                </Link>
                             </Button>
                         </div>
                     </div>

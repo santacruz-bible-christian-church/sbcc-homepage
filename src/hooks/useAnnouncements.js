@@ -15,11 +15,14 @@ export function useAnnouncements({ limit = 20 } = {}) {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
+                setLoading(true);
+                setError(null);
                 const data = await api.getAnnouncements({ limit });
                 setAnnouncements(data);
             } catch (err) {
                 console.error("Failed to fetch announcements:", err);
                 setError(err);
+                setAnnouncements([]);
             } finally {
                 setLoading(false);
             }

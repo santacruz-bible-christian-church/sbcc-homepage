@@ -9,18 +9,32 @@ export default function FeaturedContent() {
     const [announcement, setAnnouncement] = useState(null);
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [announcements, events] = await Promise.all([
+                const [announcementsResult, eventsResult] = await Promise.allSettled([
                     api.getAnnouncements({ limit: 1 }),
                     api.getEvents({ limit: 1, timeFilter: 'upcoming' })
                 ]);
-                setAnnouncement(announcements[0] || null);
-                setEvent(events[0] || null);
-            } catch (error) {
-                console.error("Failed to fetch featured content:", error);
+
+                const announcementOk = announcementsResult.status === 'fulfilled';
+                const eventOk = eventsResult.status === 'fulfilled';
+
+                if (announcementOk) {
+                    setAnnouncement(announcementsResult.value[0] || null);
+                } else {
+                    console.error("Failed to fetch featured announcement:", announcementsResult.reason);
+                }
+
+                if (eventOk) {
+                    setEvent(eventsResult.value[0] || null);
+                } else {
+                    console.error("Failed to fetch featured event:", eventsResult.reason);
+                }
+
+                setHasError(!announcementOk && !eventOk);
             } finally {
                 setLoading(false);
             }
@@ -88,6 +102,11 @@ export default function FeaturedContent() {
                     <p className="text-lg text-muted-foreground max-w-lg mx-auto">
                         Join us in worship, fellowship, and service.
                     </p>
+                    {hasError && (
+                        <p className="text-sm text-amber-600 mt-3">
+                            Live updates are unavailable right now. Showing default highlights.
+                        </p>
+                    )}
                 </div>
 
                 {/* Bento Grid */}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "@/services/api";
+import { APP_TIMEZONE } from "@/constants";
 
 /**
  * Hook to fetch and manage events data
@@ -16,11 +17,14 @@ export function useEvents({ limit = 50, timeFilter = 'all' } = {}) {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
+                setLoading(true);
+                setError(null);
                 const data = await api.getEvents({ limit, timeFilter });
                 setEvents(data);
             } catch (err) {
                 console.error("Failed to fetch events:", err);
                 setError(err);
+                setEvents([]);
             } finally {
                 setLoading(false);
             }
@@ -29,10 +33,27 @@ export function useEvents({ limit = 50, timeFilter = 'all' } = {}) {
         fetchEvents();
     }, [limit, timeFilter]);
 
+    // Timezone-aware past event check
     const isPastEvent = (dateString) => {
         try {
             const eventDate = new Date(dateString);
-            return eventDate < new Date();
+            const now = new Date();
+            
+            // Compare dates in the configured timezone
+            const formatter = new Intl.DateTimeFormat('en-CA', {
+                timeZone: APP_TIMEZONE,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            });
+            
+            const eventStr = formatter.format(eventDate);
+            const nowStr = formatter.format(now);
+            
+            return eventStr < nowStr;
         } catch {
             return false;
         }
@@ -43,16 +64,34 @@ export function useEvents({ limit = 50, timeFilter = 'all' } = {}) {
     const nextEvent = upcomingEvents[0] || null;
 
     const groupEventsByMonth = (eventsToGroup) => {
+        const monthKeyFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: APP_TIMEZONE,
+            year: 'numeric',
+            month: '2-digit',
+        });
+        const monthYearFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: APP_TIMEZONE,
+            month: 'long',
+            year: 'numeric',
+        });
+        const monthShortFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: APP_TIMEZONE,
+            month: 'short',
+        });
+
         const groups = {};
         eventsToGroup.forEach(event => {
             const date = new Date(event.date);
-            const key = `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
+            const parts = monthKeyFormatter.formatToParts(date);
+            const year = parts.find(p => p.type === 'year')?.value;
+            const month = parts.find(p => p.type === 'month')?.value;
+            const key = `${year}-${month}`;
             if (!groups[key]) {
                 groups[key] = {
                     key,
-                    label: date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-                    shortLabel: date.toLocaleDateString('en-US', { month: 'short' }),
-                    year: date.getFullYear(),
+                    label: monthYearFormatter.format(date),
+                    shortLabel: monthShortFormatter.format(date),
+                    year: Number(year),
                     events: [],
                     isPast: isPastEvent(event.date)
                 };
