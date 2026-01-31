@@ -1,34 +1,84 @@
 // API Service for SBCC Homepage
 // Connects to SBCCMS Backend Public API
 
-// VITE_API_URL already includes /api (e.g., https://example.com/api)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_CONFIG } from "@/constants";
+
+// VITE_API_URL can be a domain or include /api; API_CONFIG normalizes it.
+const API_URL = API_CONFIG.BASE_URL;
+
+class ApiError extends Error {
+    constructor(message, status, data) {
+        super(message);
+        this.name = "ApiError";
+        this.status = status;
+        this.data = data;
+    }
+}
+
+async function parseResponse(response) {
+    let data = null;
+    const contentType = response.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+        try {
+            data = await response.json();
+        } catch {
+            data = null;
+        }
+    } else {
+        try {
+            const text = await response.text();
+            if (text) {
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    data = { message: text };
+                }
+            } else {
+                data = null;
+            }
+        } catch {
+            data = null;
+        }
+    }
+
+    if (!response.ok) {
+        const message =
+            data?.message ||
+            data?.detail ||
+            `Request failed with status ${response.status}`;
+        throw new ApiError(message, response.status, data);
+    }
+
+    return data;
+}
+
+async function requestJson(url, options) {
+    const response = await fetch(url, options);
+    return parseResponse(response);
+}
 
 /**
  * Fetch announcements from the SBCCMS backend
  * @param {Object} options - Query options
  * @param {number} [options.limit] - Maximum number of announcements to fetch (max 50)
+ * @param {number} [options.ministry] - Ministry filter (optional)
  * @returns {Promise<Array>} List of announcements
  */
-async function getAnnouncements({ limit } = {}) {
+async function getAnnouncements({ limit, ministry } = {}) {
     try {
         const params = new URLSearchParams();
         if (limit) params.append('limit', limit.toString());
+        if (ministry) params.append('ministry', ministry.toString());
 
         const queryString = params.toString();
         const url = `${API_URL}/public/announcements/${queryString ? `?${queryString}` : ''}`;
 
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await requestJson(url);
         return data.results || [];
     } catch (error) {
         console.error('Failed to fetch announcements:', error);
-        return [];
+        throw error;
     }
 }
 
@@ -41,6 +91,7 @@ async function getAnnouncements({ limit } = {}) {
  * @param {boolean} data.isAnonymous - Whether to submit anonymously
  * @param {string} [data.requesterName] - Requester's name (required if not anonymous)
  * @param {string} [data.requesterEmail] - Requester's email (optional)
+ * @param {string} [data.requesterPhone] - Requester's phone (optional)
  * @returns {Promise<Object>} Response with success status
  */
 async function submitPrayerRequest(data) {
@@ -65,22 +116,18 @@ async function submitPrayerRequest(data) {
     if (data.requesterEmail) {
         payload.requester_email = data.requesterEmail;
     }
+    if (data.requesterPhone) {
+        payload.requester_phone = data.requesterPhone;
+    }
 
     try {
-        const response = await fetch(`${API_URL}/public/prayer-requests/submit/`, {
+        const result = await requestJson(`${API_URL}/public/prayer-requests/submit/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload),
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(JSON.stringify(errorData));
-        }
-
-        const result = await response.json();
         return { success: true, data: result };
     } catch (error) {
         console.error('Failed to submit prayer request:', error);
@@ -93,26 +140,22 @@ async function submitPrayerRequest(data) {
  * @param {Object} options - Query options
  * @param {number} [options.limit] - Maximum number of events to fetch
  * @param {string} [options.eventType] - Filter by event type (e.g., 'service')
- * @param {string} [options.timeFilter] - Filter: 'upcoming', 'past', or 'all' (default: 'upcoming')
+ * @param {string} [options.timeFilter] - Filter: 'upcoming', 'past', or 'all' (default: 'all')
+ * @param {number} [options.ministry] - Ministry filter (optional)
  * @returns {Promise<Array>} List of events
  */
-async function getEvents({ limit, eventType, timeFilter = 'upcoming' } = {}) {
+async function getEvents({ limit, eventType, timeFilter = 'all', ministry } = {}) {
     try {
         const params = new URLSearchParams();
         params.append('time_filter', timeFilter);
         if (limit) params.append('limit', limit.toString());
         if (eventType) params.append('event_type', eventType);
+        if (ministry) params.append('ministry', ministry.toString());
 
         const queryString = params.toString();
         const url = `${API_URL}/public/events/?${queryString}`;
 
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await requestJson(url);
         const results = data.results || [];
         
         // Backend sorts by -date (descending). For upcoming events, reverse to show soonest first
@@ -123,7 +166,7 @@ async function getEvents({ limit, eventType, timeFilter = 'upcoming' } = {}) {
         return results;
     } catch (error) {
         console.error('Failed to fetch events:', error);
-        return [];
+        throw error;
     }
 }
 /**
@@ -133,13 +176,7 @@ async function getEvents({ limit, eventType, timeFilter = 'upcoming' } = {}) {
 async function getSettings() {
     try {
         const url = `${API_URL}/public/settings/`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
+        return await requestJson(url);
     } catch (error) {
         console.error('Failed to fetch settings:', error);
         throw error;
@@ -153,16 +190,11 @@ async function getSettings() {
 async function getTeam() {
     try {
         const url = `${API_URL}/public/team/`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
+        const data = await requestJson(url);
+        return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Failed to fetch team:', error);
-        return [];
+        throw error;
     }
 }
 

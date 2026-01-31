@@ -27,6 +27,7 @@ export function useTeam() {
         const fetchTeam = async () => {
             try {
                 setLoading(true);
+                setError(null);
                 const data = await api.getTeam();
                 // Use default if API returns empty
                 setTeam(data.length > 0 ? data : DEFAULT_TEAM);

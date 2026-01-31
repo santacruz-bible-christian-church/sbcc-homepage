@@ -7,8 +7,6 @@ const DEFAULT_SETTINGS = {
     church_name: "Santa Cruz Bible Christian Church",
     tagline: "Growing in Faith, Serving the Community",
     logo: "/assets/sbcc-logo.png",
-    banner: null,
-    favicon: null,
     login_background: null,
     mission: "To know Christ and make Him known through worship, discipleship, and service.",
     vision: "To see our city transformed by the love and power of the Gospel, one life at a time.",
@@ -40,6 +38,7 @@ export function SettingsProvider({ children }) {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
+                setError(null);
                 const data = await api.getSettings();
                 // Merge with defaults to ensure all fields exist
                 setSettings(prev => ({
