@@ -12,9 +12,11 @@ import EventsPage from "@/pages/EventsPage";
 import AboutPage from "@/pages/AboutPage";
 import PrayerRequestPage from "@/pages/PrayerRequestPage";
 
+import PageWrapper from "@/components/layout/PageWrapper";
+
 function HomePage() {
   return (
-    <div className="min-h-screen bg-background font-sans antialiased">
+    <PageWrapper className="min-h-screen bg-background font-sans antialiased">
       <Navbar />
       <main>
         <Hero />
@@ -23,7 +25,26 @@ function HomePage() {
         <Contact />
       </main>
       <Footer />
-    </div>
+    </PageWrapper>
+  );
+}
+
+import { AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.ABOUT} element={<AboutPage />} />
+        <Route path={ROUTES.ANNOUNCEMENTS} element={<AnnouncementsPage />} />
+        <Route path={ROUTES.EVENTS} element={<EventsPage />} />
+        <Route path={ROUTES.PRAYER} element={<PrayerRequestPage />} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
@@ -31,13 +52,7 @@ function App() {
   return (
     <SettingsProvider>
       <Router>
-        <Routes>
-          <Route path={ROUTES.HOME} element={<HomePage />} />
-          <Route path={ROUTES.ABOUT} element={<AboutPage />} />
-          <Route path={ROUTES.ANNOUNCEMENTS} element={<AnnouncementsPage />} />
-          <Route path={ROUTES.EVENTS} element={<EventsPage />} />
-          <Route path={ROUTES.PRAYER} element={<PrayerRequestPage />} />
-        </Routes>
+        <AnimatedRoutes />
       </Router>
     </SettingsProvider>
   );
