@@ -18,7 +18,11 @@ export function useAnnouncements({ limit = 20 } = {}) {
                 setLoading(true);
                 setError(null);
                 const data = await api.getAnnouncements({ limit });
-                setAnnouncements(data);
+                // Enforce client-side sorting to guarantee newest is first
+                const sortedData = (data || []).sort((a, b) => 
+                    new Date(b.publish_at) - new Date(a.publish_at)
+                );
+                setAnnouncements(sortedData);
             } catch (err) {
                 console.error("Failed to fetch announcements:", err);
                 setError(err);

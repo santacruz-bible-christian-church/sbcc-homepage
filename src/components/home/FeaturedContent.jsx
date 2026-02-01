@@ -1,9 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, Heart, Loader2 } from "lucide-react";
+import { ArrowRight, Calendar, Heart, Loader2, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
 import { formatDateBox } from "@/hooks";
+import { motion } from "framer-motion";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.2
+        }
+    }
+};
+
+const item = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 20 } }
+};
 
 export default function FeaturedContent() {
     const [announcement, setAnnouncement] = useState(null);
@@ -44,38 +60,12 @@ export default function FeaturedContent() {
 
     if (loading) {
         return (
-            <section id="featured" className="py-24 md:py-32 bg-secondary">
-                <div className="container mx-auto px-6">
-                    {/* Skeleton Header */}
-                    <div className="max-w-3xl mx-auto text-center mb-16">
-                        <div className="h-4 w-32 bg-muted rounded mx-auto mb-4 animate-pulse" />
-                        <div className="h-10 w-64 bg-muted rounded mx-auto mb-4 animate-pulse" />
-                        <div className="h-5 w-48 bg-muted rounded mx-auto animate-pulse" />
-                    </div>
-
-                    {/* Skeleton Bento Grid */}
-                    <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        {/* Large Card Skeleton */}
-                        <div className="lg:col-span-7 bg-muted rounded-2xl min-h-[400px] animate-pulse" />
-
-                        {/* Right Column Skeletons */}
-                        <div className="lg:col-span-5 flex flex-col gap-6">
-                            <div className="flex-1 bg-white border border-border/50 rounded-2xl p-6 animate-pulse">
-                                <div className="flex justify-between mb-4">
-                                    <div className="w-11 h-11 bg-muted rounded-xl" />
-                                    <div className="w-14 h-14 bg-muted rounded-xl" />
-                                </div>
-                                <div className="h-3 w-24 bg-muted rounded mb-3" />
-                                <div className="h-6 w-full bg-muted rounded mb-2" />
-                                <div className="h-4 w-32 bg-muted rounded" />
-                            </div>
-                            <div className="flex-1 bg-primary/5 border border-primary/10 rounded-2xl p-6 animate-pulse">
-                                <div className="w-11 h-11 bg-muted rounded-xl mb-4" />
-                                <div className="h-3 w-24 bg-muted rounded mb-3" />
-                                <div className="h-6 w-full bg-muted rounded mb-2" />
-                                <div className="h-4 w-48 bg-muted rounded" />
-                            </div>
-                        </div>
+            <section id="featured" className="relative py-24 md:py-32 bg-secondary border-t border-border overflow-hidden">
+                <div className="container mx-auto px-6 relative z-10">
+                     <div className="max-w-3xl mx-auto text-center mb-16">
+                        <div className="h-4 w-32 bg-muted mx-auto mb-4 animate-pulse" />
+                        <div className="h-10 w-64 bg-muted mx-auto mb-4 animate-pulse" />
+                        <div className="h-5 w-48 bg-muted mx-auto animate-pulse" />
                     </div>
                 </div>
             </section>
@@ -85,149 +75,208 @@ export default function FeaturedContent() {
     const eventDate = event ? formatDateBox(event.date) : null;
 
     return (
-        <section id="featured" className="py-24 md:py-32 bg-secondary">
-            <div className="container mx-auto px-6">
-                {/* Section Header */}
-                <div className="text-center mb-16">
-                    <div className="flex items-center justify-center gap-4 mb-4">
-                        <div className="w-12 h-[2px] bg-primary/30" />
-                        <span className="text-primary font-medium tracking-widest text-sm uppercase">
-                            What's Happening
-                        </span>
-                        <div className="w-12 h-[2px] bg-primary/30" />
-                    </div>
-                    <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
+        <section id="featured" className="relative py-32 md:py-40 bg-muted/30 border-t border-primary/10 overflow-hidden">
+            {/* Massive Background Typography for Depth */}
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 0.5, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="absolute top-20 left-1/2 -translate-x-1/2 select-none pointer-events-none z-0"
+            >
+                <span className="font-serif text-[12rem] md:text-[20rem] leading-none text-foreground/5 opacity-50 whitespace-nowrap italic">
+                    Connect
+                </span>
+            </motion.div>
+
+            <div className="container mx-auto px-6 relative z-10">
+                {/* Section Header - Floating & Overlapped */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="relative text-center mb-20 z-20"
+                >
+                     <span className="inline-block bg-primary text-background px-4 py-1 font-mono text-xs font-bold uppercase tracking-widest rotate-[-2deg] shadow-sm mb-6">
+                        What's Happening
+                    </span>
+                    <h2 className="font-serif text-5xl md:text-7xl font-bold text-foreground mb-6 relative inline-block">
                         Stay Connected
+                        {/* Scribble Underline */}
+                        <motion.svg 
+                            initial={{ pathLength: 0 }}
+                            whileInView={{ pathLength: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+                            className="absolute -bottom-2 left-0 w-full h-4 text-primary/40" viewBox="0 0 200 9" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M2.00026 6.99997C47.5611 1.63737 114.717 -2.48694 198 3.99997" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+                        </motion.svg>
                     </h2>
-                    <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-                        Join us in worship, fellowship, and service.
+                    <p className="font-sans text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
+                        The latest updates, events, and prayer needs from our community.
                     </p>
-                    {hasError && (
-                        <p className="text-sm text-amber-600 mt-3">
-                            Live updates are unavailable right now. Showing default highlights.
-                        </p>
-                    )}
-                </div>
+                </motion.div>
 
-                {/* Bento Grid */}
-                <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Scrapbook Grid - Messy & Overlapping */}
+                <motion.div 
+                    variants={container}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, margin: "-100px" }}
+                    className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
+                >
                     
-                    {/* Featured Announcement - Large Card */}
-                    <div className="lg:col-span-7 group relative overflow-hidden rounded-2xl bg-neutral-900 min-h-[400px]">
-                        {/* Background */}
-                        <div className="absolute inset-0">
-                            <img 
-                                src="/assets/worship-team.jpg" 
-                                alt="Worship" 
-                                className="w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/70 to-neutral-950/20" />
-                        </div>
-                        
-                        {/* Content */}
-                        <div className="relative z-10 h-full flex flex-col justify-end p-8">
-                            <span className="inline-flex w-fit items-center px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider mb-4">
-                                Latest Announcement
-                            </span>
-                            
-                            {announcement ? (
-                                <>
-                                    <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3 line-clamp-2">
-                                        {announcement.title}
-                                    </h3>
-                                    <p className="text-white/70 line-clamp-2 mb-6 max-w-md">
-                                        {announcement.body?.replace(/<[^>]*>/g, '').substring(0, 120)}...
-                                    </p>
-                                </>
-                            ) : (
-                                <>
-                                    <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">
-                                        Welcome to SBCC
-                                    </h3>
-                                    <p className="text-white/70 mb-6 max-w-md">
-                                        Check back soon for the latest news and updates from our church community.
-                                    </p>
-                                </>
-                            )}
-                            
-                            <Button asChild className="w-fit rounded-full bg-white text-neutral-900 hover:bg-white/90">
-                                <Link to="/announcements" className="flex items-center gap-2">
-                                    View All
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
-                            </Button>
-                        </div>
-                    </div>
+                    {/* Featured Announcement - Large Card (Tilted Left) */}
+                    <motion.div variants={item} className="lg:col-span-7 group relative">
+                        {/* Stacked "Archive" Photo - Only visible if we have a specific announcement photo */}
+                        {announcement?.photo && (
+                            <div className="absolute top-2 -left-3 w-full h-full bg-white border-[3px] border-white shadow-lg rotate-[-4deg] z-0 overflow-hidden transform scale-[0.98] group-hover:rotate-[-6deg] group-hover:-translate-x-4 transition-all duration-500">
+                                <img src="/assets/worship-team.jpg" alt="Community" className="w-full h-full object-cover grayscale opacity-40 blur-[1px]" />
+                                <div className="absolute bottom-4 left-4 font-mono text-[10px] text-black/50 rotate-[-2deg]">
+                                    // ARCHIVE_IMG_01
+                                </div>
+                            </div>
+                        )}
 
-                    {/* Right Column - Stacked Cards */}
-                    <div className="lg:col-span-5 flex flex-col gap-6">
+                        <div className="relative z-10 overflow-hidden bg-foreground text-background min-h-[500px] border-[3px] border-foreground shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)] lg:rotate-[-1deg] group-hover:rotate-0 group-hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,0.2)] group-hover:-translate-y-2 transition-all duration-500 ease-out">
+                            {/* Background Image with Noise Overlay */}
+                            <div className="absolute inset-0 z-0">
+                                <img 
+                                    src={announcement?.photo || "/assets/worship-team.jpg"} 
+                                    alt={announcement?.title || "Worship"} 
+                                    className="w-full h-full object-cover grayscale opacity-50 mix-blend-overlay transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                                {/* Noise Texture */}
+                                <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+')] mix-blend-overlay" />
+                            </div>
+                            
+                            {/* Tape Label */}
+                            <div className="absolute top-8 -left-2 bg-yellow-100/90 text-neutral-900 px-6 py-2 shadow-md rotate-[-3deg] z-20 backdrop-blur-sm">
+                                <span className="font-mono text-sm font-bold uppercase tracking-wider">
+                                    Latest Update
+                                </span>
+                            </div>
+
+                            {/* Content */}
+                            <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-12">
+                                {announcement ? (
+                                    <>
+                                        <h3 className="font-serif text-3xl md:text-5xl font-bold text-white mb-6 leading-[0.9]">
+                                            {announcement.title}
+                                        </h3>
+                                        <div className="h-[1px] w-24 bg-white/50 mb-6" />
+                                        <div 
+                                            className="font-sans text-white/80 line-clamp-3 mb-8 max-w-lg text-lg prose prose-invert"
+                                            dangerouslySetInnerHTML={{ __html: announcement.body }}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <h3 className="font-serif text-3xl md:text-5xl font-bold text-white mb-6 leading-[0.9]">
+                                            Welcome to SBCC
+                                        </h3>
+                                        <div className="h-[1px] w-24 bg-white/50 mb-6" />
+                                        <p className="font-sans text-white/80 mb-8 max-w-lg text-lg">
+                                            A place to belong, believe, and become. Check back soon for community updates.
+                                        </p>
+                                    </>
+                                )}
+                                
+                                <Button asChild className="w-fit rounded-none bg-white text-black hover:bg-neutral-200 uppercase font-mono text-xs tracking-wider border-0 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                                    <Link to="/announcements" className="flex items-center gap-2">
+                                        Read More <ArrowRight className="w-3 h-3" />
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Right Column - Stacked Cards (Tilted Right & Offset) */}
+                    <div className="lg:col-span-5 flex flex-col gap-10 mt-12 lg:mt-24">
+                        
                         {/* Next Event Card */}
-                        <div className="flex-1 group relative overflow-hidden rounded-2xl bg-white border border-border/50 p-6 flex flex-col hover:shadow-lg hover:border-primary/20 transition-all duration-300">
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                    <Calendar className="w-5 h-5" />
+                        <motion.div variants={item} className="group relative bg-background border-[3px] border-foreground p-8 flex flex-col shadow-[8px_8px_0px_0px_var(--primary)] lg:rotate-[1deg] hover:rotate-0 hover:shadow-[12px_12px_0px_0px_var(--primary)] hover:-translate-y-1 transition-all duration-300">
+                             {/* Pin/Sticker Effect */}
+                             <div className="absolute -top-4 right-8 w-4 h-4 rounded-full bg-red-500 shadow-sm z-20 border border-black/10" />
+
+                            <div className="flex items-start justify-between mb-8">
+                                <div className="w-14 h-14 border-2 border-primary bg-primary/5 flex items-center justify-center text-primary">
+                                    <Calendar className="w-7 h-7" />
                                 </div>
                                 {eventDate && (
-                                    <div className="text-right bg-primary/10 rounded-xl px-3 py-2">
-                                        <div className="text-2xl font-bold text-primary leading-none">{eventDate.day}</div>
-                                        <div className="text-xs font-medium text-primary/70">{eventDate.month}</div>
+                                    <div className="text-center font-mono border-2 border-foreground p-2 min-w-[90px] rotate-3 bg-white shadow-sm">
+                                        <div className="text-2xl font-bold leading-none">{eventDate.day}</div>
+                                        <div className="text-xs uppercase font-bold tracking-widest">{eventDate.month}</div>
                                     </div>
                                 )}
                             </div>
                             
-                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Upcoming Event</span>
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                                <UpNext />
+                            </span>
+                            
                             {event ? (
                                 <>
-                                    <h3 className="font-serif text-lg font-bold text-foreground mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+                                    <h3 className="font-serif text-3xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors leading-none">
                                         {event.title}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground line-clamp-1 mb-4">
-                                        {event.location || 'Church Venue'}
+                                    <p className="font-mono text-xs text-muted-foreground mb-8 uppercase flex items-center gap-2">
+                                        <MapPin className="w-3 h-3" />
+                                        {event.location || 'Church Main Hall'}
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <h3 className="font-serif text-lg font-bold text-foreground mb-1">
+                                    <h3 className="font-serif text-3xl font-bold text-foreground mb-3 leading-none">
                                         Stay Tuned
                                     </h3>
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                        More events coming soon!
+                                    <p className="font-mono text-xs text-muted-foreground mb-8 uppercase">
+                                        More events coming soon
                                     </p>
                                 </>
                             )}
                             
                             <Link 
                                 to="/events" 
-                                className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                                className="mt-auto group/link inline-flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors border-b-2 border-transparent hover:border-primary pb-1 w-fit"
                             >
-                                See All Events <ArrowRight className="w-4 h-4" />
+                                See All Events <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
                             </Link>
-                        </div>
+                        </motion.div>
 
-                        {/* Prayer Request Card — Now uses primary colors */}
-                        <div className="flex-1 group relative overflow-hidden rounded-2xl bg-primary/5 border border-primary/10 p-6 flex flex-col hover:shadow-lg hover:bg-primary/10 transition-all duration-300">
-                            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
-                                <Heart className="w-5 h-5" />
+                        {/* Prayer Request Card */}
+                        <motion.div variants={item} className="group relative bg-primary text-primary-foreground border-2 border-primary p-8 flex flex-col shadow-[8px_8px_0px_0px_var(--foreground)] lg:rotate-[-2deg] hover:rotate-0 hover:shadow-[12px_12px_0px_0px_var(--foreground)] hover:-translate-y-1 transition-all duration-300">
+                             {/* Tape Effect */}
+                             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/20 backdrop-blur-sm -rotate-1 shadow-sm transform skew-x-12" />
+
+                            <div className="w-12 h-12 border-2 border-primary-foreground/30 flex items-center justify-center mb-6 rounded-none">
+                                <Heart className="w-6 h-6" />
                             </div>
                             
-                            <span className="text-xs font-bold uppercase tracking-wider text-primary/70 mb-2">Prayer Request</span>
-                            <h3 className="font-serif text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                                We're Here For You
+                            <span className="font-mono text-xs font-bold uppercase tracking-wider opacity-80 mb-3">Community</span>
+                            <h3 className="font-serif text-3xl font-bold mb-3">
+                                Need Prayer?
                             </h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                Share your prayer needs with our caring community.
+                            <p className="font-sans text-primary-foreground/80 mb-8 leading-relaxed text-lg">
+                                Life is heavy. Let us carry it with you.
                             </p>
                             
                             <Link 
                                 to="/prayer" 
-                                className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                                className="mt-auto inline-block border-2 border-primary-foreground text-center py-4 font-mono text-xs uppercase font-bold hover:bg-primary-foreground hover:text-primary transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
                             >
-                                Submit Request <ArrowRight className="w-4 h-4" />
+                                Submit Request
                             </Link>
-                        </div>
+                        </motion.div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
     );
 }
+
+const UpNext = () => <span>Up Next</span>;

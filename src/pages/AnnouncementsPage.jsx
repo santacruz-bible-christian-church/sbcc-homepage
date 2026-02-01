@@ -1,4 +1,4 @@
-import { Calendar, Loader2, Megaphone } from "lucide-react";
+import { Calendar, Loader2, Newspaper, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -17,328 +17,245 @@ import {
     formatFullDate,
     formatRelativeTime,
 } from "@/hooks";
+import { motion } from "framer-motion";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1 }
+    }
+};
+
+const item = {
+    hidden: { opacity: 0, x: -20 },
+    show: { opacity: 1, x: 0 }
+};
+
+import PageWrapper from "@/components/layout/PageWrapper";
 
 export default function AnnouncementsPage() {
     useScrollToTop();
     const { announcements, loading, error, featuredAnnouncement, restAnnouncements } = useAnnouncements({ limit: 20 });
-    const errorMessage = error?.status === 429
-        ? "You're checking too fast. Please wait a moment and try again."
-        : "We couldn't load announcements right now. Please try again shortly.";
+    
+    // Get current date for the masthead
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
-        <div className="min-h-screen bg-background font-sans antialiased">
+        <PageWrapper className="min-h-screen bg-[#f4f1ea] font-serif text-neutral-900 selection:bg-neutral-900 selection:text-[#f4f1ea]">
             <Navbar />
 
-            {/* Hero Section */}
-            <section className="relative min-h-[50vh] flex items-center justify-center text-center overflow-hidden">
-                {/* Background */}
-                <div className="absolute inset-0 z-0">
-                    <img
-                        src="/assets/pastor-preaching.jpg"
-                        alt="Pastor Preaching"
-                        className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-neutral-950/30" />
-                </div>
-
-                {/* Content */}
-                <div className="relative z-10 container mx-auto px-6 py-24">
-                    <div className="max-w-2xl mx-auto">
-                        {/* Icon */}
-                        <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-lg shadow-white/10">
-                            <Megaphone className="w-10 h-10 text-white drop-shadow-lg" />
+            {/* HEADER: Masthead */}
+            <header className="pt-32 pb-8 px-6 border-b-4 border-black">
+                <div className="container mx-auto max-w-6xl text-center">
+                    <div className="border-b-2 border-black pb-2 mb-2 flex justify-between items-end font-sans text-xs font-bold tracking-widest uppercase">
+                        <span>Vol. XXXII</span>
+                        <span>Santa Cruz Bible Christian Church</span>
+                        <span>Est. 1992</span>
+                    </div>
+                    
+                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase mb-4 scale-y-110">
+                        The Good News
+                    </h1>
+                    
+                    <div className="border-t-2 border-b-2 border-black py-2 flex justify-between items-center font-sans text-sm font-bold uppercase tracking-widest">
+                        <span>{today}</span>
+                        <div className="flex items-center gap-2">
+                             <Newspaper className="w-4 h-4" />
+                             <span>Kingdom Edition</span>
                         </div>
-
-                        {/* Accent */}
-                        <div className="flex items-center justify-center gap-4 mb-4">
-                            <div className="w-12 h-[2px] bg-white/50" />
-                            <span className="text-white/80 font-medium tracking-widest text-sm uppercase">
-                                Stay Updated
-                            </span>
-                            <div className="w-12 h-[2px] bg-white/50" />
-                        </div>
-
-                        {/* Title */}
-                        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-                            Announcements
-                        </h1>
-
-                        {/* Description */}
-                        <p className="text-lg text-white/70 max-w-lg mx-auto">
-                            The latest news and happenings from our church community.
-                        </p>
+                        <span>Price: Paid in Full</span>
                     </div>
                 </div>
-            </section>
+            </header>
 
-            {/* Content Section */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-6">
+            {/* CONTENT: Newspaper Grid */}
+            <section className="py-12 px-6">
+                <div className="container mx-auto max-w-6xl">
                     {loading ? (
-                        <div className="max-w-6xl mx-auto">
-                            {/* Featured Skeleton */}
-                            <div className="mb-12">
-                                <div className="h-4 w-32 bg-muted rounded mb-6 animate-pulse" />
-                                <div className="bg-white border border-border/50 rounded-2xl p-8 animate-pulse">
-                                    <div className="flex flex-col md:flex-row gap-6">
-                                        <div className="w-20 h-20 bg-muted rounded-2xl flex-shrink-0" />
-                                        <div className="flex-grow">
-                                            <div className="h-4 w-24 bg-muted rounded mb-3" />
-                                            <div className="h-8 w-3/4 bg-muted rounded mb-4" />
-                                            <div className="h-4 w-full bg-muted rounded mb-2" />
-                                            <div className="h-4 w-2/3 bg-muted rounded" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Grid Skeleton */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {[1, 2, 3, 4].map(i => (
-                                    <div key={i} className="bg-white border border-border/50 rounded-xl p-6 animate-pulse">
-                                        <div className="flex gap-4">
-                                            <div className="w-14 h-14 bg-muted rounded-xl flex-shrink-0" />
-                                            <div className="flex-grow">
-                                                <div className="h-5 w-3/4 bg-muted rounded mb-2" />
-                                                <div className="h-3 w-1/2 bg-muted rounded" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                         <div className="flex flex-col items-center justify-center py-20">
+                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
+                             <p className="font-mono text-xs uppercase tracking-widest">Fetching latest news...</p>
+                         </div>
                     ) : error ? (
-                        <div className="text-center py-20 max-w-md mx-auto">
-                            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Megaphone className="w-10 h-10 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-2xl font-serif font-bold mb-3">Unable to Load Announcements</h3>
-                            <p className="text-muted-foreground">
-                                {errorMessage}
-                            </p>
+                        <div className="text-center py-20 border-2 border-black p-12 max-w-lg mx-auto bg-white lg:rotate-1">
+                            <h3 className="text-2xl font-bold mb-2 uppercase">Printing Error</h3>
+                            <p className="font-sans text-sm">{error?.status === 429 ? "Please wait a moment." : "Check connection."}</p>
                         </div>
                     ) : announcements.length === 0 ? (
-                        <div className="text-center py-20 max-w-md mx-auto">
-                            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Megaphone className="w-10 h-10 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-2xl font-serif font-bold mb-3">No Announcements Yet</h3>
-                            <p className="text-muted-foreground">
-                                There are no announcements at this time. Check back soon!
-                            </p>
+                        <div className="text-center py-20">
+                            <h3 className="text-4xl font-bold uppercase mb-4">Extra! Extra!</h3>
+                            <p className="font-sans">No news is good news? Check back later.</p>
                         </div>
                     ) : (
-                        <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
-                            {/* Featured Announcement */}
-                            {featuredAnnouncement && (
-                                <div className="mb-16">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="w-2 h-2 bg-primary rounded-full" />
-                                        <span className="text-sm font-bold text-primary uppercase tracking-wider">Latest</span>
-                                    </div>
-                                    
-                                    <article className="group bg-white border border-border/50 rounded-2xl overflow-hidden hover:shadow-xl hover:border-primary/20 transition-all duration-300">
-                                        {/* Photo */}
-                                        {featuredAnnouncement.photo && (
-                                            <div className="relative w-full h-64 md:h-80 overflow-hidden">
-                                                <img
-                                                    src={featuredAnnouncement.photo}
-                                                    alt={featuredAnnouncement.title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                            
+                            {/* MAIN COLUMN (Featured) - Spans 8 cols */}
+                            <div className="lg:col-span-8 flex flex-col gap-12">
+                                {featuredAnnouncement && (
+                                    <article className="border-b-2 border-neutral-300 pb-12">
+                                        <div className="mb-4 flex flex-wrap items-center justify-between gap-4 font-sans text-xs font-bold uppercase tracking-tight text-neutral-500 border-b border-black pb-2">
+                                            <div className="flex items-center gap-2">
+                                                <span>{formatFullDate(featuredAnnouncement.publish_at)}</span>
+                                                {featuredAnnouncement.ministry_name && (
+                                                    <>
+                                                        <span>•</span>
+                                                        <span className="text-neutral-900 bg-neutral-200 px-1">
+                                                            {featuredAnnouncement.ministry_name}
+                                                        </span>
+                                                    </>
+                                                )}
                                             </div>
-                                        )}
-
-                                        <div className="p-8 md:p-10">
-                                            <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-                                                {/* Date Box */}
-                                                <div className="flex-shrink-0">
-                                                    <div className="w-20 h-20 bg-primary rounded-2xl flex flex-col items-center justify-center text-white shadow-lg shadow-primary/30">
-                                                        <span className="text-xs font-bold tracking-wider uppercase">{formatDateBox(featuredAnnouncement.publish_at).month}</span>
-                                                        <span className="text-3xl font-bold leading-none">{formatDateBox(featuredAnnouncement.publish_at).day}</span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Content */}
-                                                <div className="flex-grow">
-                                                    <div className="flex flex-wrap items-center gap-2 mb-3 text-sm text-muted-foreground">
-                                                        {formatRelativeTime(featuredAnnouncement.publish_at) && (
-                                                            <span className="font-medium text-primary">{formatRelativeTime(featuredAnnouncement.publish_at)}</span>
-                                                        )}
-                                                        {featuredAnnouncement.ministry_name && (
-                                                            <>
-                                                                <span className="text-border">•</span>
-                                                                <span className="bg-secondary px-2 py-0.5 rounded-full text-xs font-medium">{featuredAnnouncement.ministry_name}</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-
-                                                    <h2 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-4 group-hover:text-primary transition-colors">
-                                                        {featuredAnnouncement.title}
-                                                    </h2>
-
-                                                    <p className="text-muted-foreground leading-relaxed mb-6 line-clamp-3">
-                                                        {featuredAnnouncement.body}
-                                                    </p>
-
-                                                    <Dialog>
-                                                        <DialogTrigger asChild>
-                                                            <Button variant="outline" className="rounded-full px-6">
-                                                                Read Full Announcement →
-                                                            </Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="sm:max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw] max-h-[95vh] overflow-y-auto p-0">
-                                                            {featuredAnnouncement.photo && (
-                                                                <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
-                                                                    <img
-                                                                        src={featuredAnnouncement.photo}
-                                                                        alt={featuredAnnouncement.title}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
-                                                                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-                                                                </div>
-                                                            )}
-                                                            <DialogHeader className="px-6">
-                                                                <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                                                                    <Calendar className="w-4 h-4" />
-                                                                    {formatFullDate(featuredAnnouncement.publish_at)}
-                                                                    {featuredAnnouncement.ministry_name && (
-                                                                        <>
-                                                                            <span>•</span>
-                                                                            <span className="text-primary/80 font-medium">{featuredAnnouncement.ministry_name}</span>
-                                                                        </>
-                                                                    )}
-                                                                </div>
-                                                                <DialogTitle className="text-xl md:text-2xl font-serif font-bold">{featuredAnnouncement.title}</DialogTitle>
-                                                            </DialogHeader>
-                                                            <DialogDescription className="text-base text-foreground leading-relaxed whitespace-pre-line pt-2 px-6 pb-6">
-                                                                {featuredAnnouncement.body}
-                                                            </DialogDescription>
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                </div>
+                                            <div className="flex items-center gap-4">
+                                                <span>{Math.ceil(featuredAnnouncement.body.split(' ').length / 200)} min read</span>
+                                                <button className="flex items-center gap-1 hover:text-black transition-colors">
+                                                    <Share2 className="w-3 h-3" />
+                                                    Share
+                                                </button>
                                             </div>
                                         </div>
-                                    </article>
-                                </div>
-                            )}
 
-                            {/* Grid of Other Announcements */}
-                            {restAnnouncements.length > 0 && (
-                                <div>
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="w-2 h-2 bg-muted-foreground/50 rounded-full" />
-                                        <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Previous Announcements</span>
-                                    </div>
+                                        <h2 className="text-5xl md:text-6xl font-bold leading-[0.9] mb-6 hover:underline decoration-4 underline-offset-4 cursor-pointer">
+                                            {featuredAnnouncement.title}
+                                        </h2>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {restAnnouncements.map((item, index) => {
-                                            const dateObj = formatDateBox(item.publish_at);
-                                            const relativeTime = formatRelativeTime(item.publish_at);
+                                        <div className="mb-8 border-2 border-black p-1 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                                            <div className="grayscale contrast-125 hover:grayscale-0 transition-all duration-500 overflow-hidden relative">
+                                                <img 
+                                                    src={featuredAnnouncement.photo} 
+                                                    alt={featuredAnnouncement.title} 
+                                                    className="w-full h-auto object-cover opacity-90"
+                                                />
+                                                {/* Halftone Overlay */}
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle,theme('colors.neutral.900')_1px,transparent_1px)] bg-[length:4px_4px] opacity-20 pointer-events-none"></div>
+                                            </div>
+                                            <div className="flex justify-between items-center mt-2 px-1">
+                                                <div className="h-px bg-neutral-300 flex-grow mr-4"></div>
+                                                <p className="font-sans text-[10px] uppercase tracking-widest text-neutral-500 whitespace-nowrap">
+                                                    Fig 1.1 — Photo courtesy of Media Team
+                                                </p>
+                                            </div>
+                                        </div>
 
-                                            return (
-                                                <article 
-                                                    key={item.id} 
-                                                    className="group bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300 animate-in fade-in slide-in-from-bottom-3"
-                                                    style={{ 
-                                                        animationDelay: `${index * 80}ms`,
-                                                        animationFillMode: 'backwards'
-                                                    }}
-                                                >
-                                                    {/* Photo Thumbnail */}
-                                                    {item.photo && (
-                                                        <div className="relative w-full h-40 overflow-hidden">
-                                                            <img
-                                                                src={item.photo}
-                                                                alt={item.title}
-                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                            />
-                                                        </div>
+                                        <div className="text-neutral-900 text-lg leading-relaxed text-justify hyphens-auto font-serif">
+                                            {featuredAnnouncement.body.split('\n').filter(Boolean).slice(0, 1).map((paragraph, index) => (
+                                                <p key={index} className="mb-4">
+                                                    <span className="font-bold uppercase tracking-widest text-sm mr-1 font-sans">
+                                                        {paragraph.split(' ').slice(0, 3).join(' ')}
+                                                    </span>
+                                                    <span className="text-xl">
+                                                        {paragraph.split(' ').slice(3).join(' ')}
+                                                        <span className="text-neutral-400">...</span>
+                                                    </span>
+                                                </p>
+                                            ))}
+                                        </div>
+
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <div className="mt-8 flex justify-center">
+                                                    <Button variant="outline" className="font-sans font-bold uppercase tracking-widest text-xs border-2 border-black hover:bg-black hover:text-white rounded-none px-8 py-6 transition-all">
+                                                        Read Full Article on Page 4
+                                                    </Button>
+                                                </div>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#f4f1ea] border-2 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]">
+                                                <DialogHeader>
+                                                    <DialogTitle className="text-4xl font-serif font-black uppercase mb-4 leading-none">{featuredAnnouncement.title}</DialogTitle>
+                                                    <DialogDescription className="font-sans text-xs uppercase tracking-widest text-neutral-500 border-b border-neutral-300 pb-4 mb-4">
+                                                        {formatFullDate(featuredAnnouncement.publish_at)}
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="font-serif text-lg leading-relaxed space-y-4">
+                                                    {featuredAnnouncement.photo && (
+                                                        <img src={featuredAnnouncement.photo} className="w-full grayscale contrast-125 mb-6 border border-black" alt="Detail" />
                                                     )}
+                                                    <p className="whitespace-pre-line">{featuredAnnouncement.body}</p>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </article>
+                                )}
+                            </div>
 
-                                                    <div className="p-6">
-                                                        <div className="flex gap-4">
-                                                            {/* Date Box */}
-                                                            <div className="flex-shrink-0">
-                                                                <div className="w-14 h-14 bg-secondary rounded-xl flex flex-col items-center justify-center text-foreground group-hover:bg-primary group-hover:text-white transition-colors">
-                                                                    <span className="text-[10px] font-bold tracking-wider uppercase">{dateObj.month}</span>
-                                                                    <span className="text-xl font-bold leading-none">{dateObj.day}</span>
-                                                                </div>
-                                                            </div>
+                            {/* SIDE COLUMN (Headlines) - Spans 4 cols */}
+                            <motion.div 
+                                className="lg:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-black pt-8 lg:pt-0 lg:pl-8 lg:ml-4 flex flex-col gap-8"
+                                variants={container}
+                                initial="hidden"
+                                whileInView="show"
+                                viewport={{ once: true }}
+                            >
+                                <motion.h3 variants={item} className="font-sans font-black text-xl uppercase border-b-4 border-black pb-2">
+                                    In Other News
+                                </motion.h3>
 
-                                                            {/* Content */}
-                                                            <div className="flex-grow min-w-0">
-                                                                <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs text-muted-foreground">
-                                                                    {relativeTime && (
-                                                                        <span className="font-medium">{relativeTime}</span>
-                                                                    )}
-                                                                    {item.ministry_name && (
-                                                                        <>
-                                                                            <span className="text-border">•</span>
-                                                                            <span>{item.ministry_name}</span>
-                                                                        </>
-                                                                    )}
-                                                                </div>
+                                {restAnnouncements.map((item) => (
+                                    <motion.div key={item.key} variants={item} className="group cursor-pointer">
+                                        <div className="mb-2 font-sans text-[10px] font-bold uppercase text-neutral-500 flex justify-between">
+                                            <span>{formatRelativeTime(item.publish_at)}</span>
+                                            {item.ministry_name && <span className="bg-black text-white px-1">{item.ministry_name}</span>}
+                                        </div>
+                                        
+                                        <h4 className="text-2xl font-bold leading-tight mb-3 group-hover:underline decoration-2 underline-offset-2">
+                                            {item.title}
+                                        </h4>
+                                        
+                                        <p className="text-sm leading-snug text-neutral-600 line-clamp-3 mb-3 border-l-2 border-neutral-300 pl-3">
+                                            {item.body}
+                                        </p>
 
-                                                                <h3 className="text-lg font-bold font-serif text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                                                                    {item.title}
-                                                                </h3>
-
-                                                                <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                                                                    {item.body}
-                                                                </p>
-
-                                                                <Dialog>
-                                                                    <DialogTrigger asChild>
-                                                                        <Button variant="link" className="p-0 h-auto text-primary font-medium text-sm">
-                                                                            Read more →
-                                                                        </Button>
-                                                                    </DialogTrigger>
-                                                                    <DialogContent className="sm:max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw] max-h-[95vh] overflow-y-auto p-0">
-                                                                        {item.photo && (
-                                                                            <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
-                                                                                <img
-                                                                                    src={item.photo}
-                                                                                    alt={item.title}
-                                                                                    className="w-full h-full object-cover"
-                                                                                />
-                                                                                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-                                                                            </div>
-                                                                        )}
-                                                                        <DialogHeader className="px-6">
-                                                                            <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                                                                                <Calendar className="w-4 h-4" />
-                                                                                {formatFullDate(item.publish_at)}
-                                                                                {item.ministry_name && (
-                                                                                    <>
-                                                                                        <span>•</span>
-                                                                                        <span className="text-primary/80 font-medium">{item.ministry_name}</span>
-                                                                                    </>
-                                                                                )}
-                                                                            </div>
-                                                                            <DialogTitle className="text-xl md:text-2xl font-serif font-bold">{item.title}</DialogTitle>
-                                                                        </DialogHeader>
-                                                                        <DialogDescription className="text-base text-foreground leading-relaxed whitespace-pre-line pt-2 px-6 pb-6">
-                                                                            {item.body}
-                                                                        </DialogDescription>
-                                                                    </DialogContent>
-                                                                </Dialog>
-                                                            </div>
-                                                        </div>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button className="font-sans text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-white px-2 py-1 transition-colors border border-black">
+                                                    Read
+                                                </button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-2xl bg-[#f4f1ea] border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-0 overflow-hidden">
+                                                {item.photo && (
+                                                    <div className="relative h-48 w-full border-b-2 border-black overflow-hidden group-hover:contrast-125 transition-all">
+                                                        <img 
+                                                            src={item.photo} 
+                                                            alt={item.title} 
+                                                            className="w-full h-full object-cover grayscale contrast-125"
+                                                        />
+                                                        <div className="absolute inset-0 bg-[radial-gradient(circle,theme('colors.neutral.900')_1px,transparent_1px)] bg-[length:4px_4px] opacity-20 pointer-events-none"></div>
                                                     </div>
-                                                </article>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
+                                                )}
+                                                <div className="p-6 md:p-8">
+                                                     <div className="mb-4 flex flex-wrap gap-2 font-sans text-[10px] font-bold uppercase tracking-widest text-neutral-500 border-b border-neutral-300 pb-4">
+                                                        <span>{formatFullDate(item.publish_at)}</span>
+                                                        {item.ministry_name && (
+                                                            <>
+                                                                <span>•</span>
+                                                                <span className="text-black">{item.ministry_name}</span>
+                                                            </>
+                                                        )}
+                                                     </div>
+                                                     <h2 className="text-3xl font-serif font-black mb-6 leading-none uppercase">{item.title}</h2>
+                                                     <p className="font-serif text-lg leading-relaxed whitespace-pre-line text-neutral-800">{item.body}</p>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+                                        
+                                        <div className="w-full h-px bg-neutral-300 mt-8"></div>
+                                    </motion.div>
+                                ))}
+
+                                {/* Ad / Filler */}
+                                <motion.div variants={item} className="border-4 border-double border-neutral-400 p-6 text-center mt-8 opacity-70 lg:rotate-1">
+                                    <p className="font-sans text-xs font-bold uppercase mb-2">Advertisement</p>
+                                    <h4 className="font-black text-xl uppercase mb-2">Join a Small Group</h4>
+                                    <p className="font-serif italic text-sm mb-4">"Life is better together."</p>
+                                    <div className="inline-block border border-black px-4 py-1 font-sans text-xs font-bold uppercase">Call Now</div>
+                                </motion.div>
+                            </motion.div>
                         </div>
                     )}
                 </div>
             </section>
 
             <Footer />
-        </div>
+        </PageWrapper>
     );
 }
