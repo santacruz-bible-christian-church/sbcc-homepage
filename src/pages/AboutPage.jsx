@@ -219,11 +219,22 @@ export default function AboutPage() {
                                     {/* Tape Strip */}
                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-100/80 rotate-2 backdrop-blur-sm shadow-sm z-10 opacity-70" />
 
-                                    <div className="aspect-square bg-neutral-200 mb-4 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500 border border-neutral-100">
+                                    <div className="aspect-square bg-neutral-200 mb-4 overflow-hidden transition-all duration-500 border border-neutral-100 relative">
                                         {member.photo ? (
-                                             <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                                             <img 
+                                                src={member.photo} 
+                                                alt={member.name} 
+                                                className="w-full h-full object-cover" 
+                                                loading="lazy"
+                                                onError={(e) => {
+                                                    e.target.onerror = null; 
+                                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random&color=fff&size=200`;
+                                                }}
+                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-neutral-100 text-neutral-300 font-bold text-4xl">?</div>
+                                            <div className="w-full h-full flex items-center justify-center bg-neutral-100 text-neutral-300 font-bold text-4xl">
+                                                {member.name.charAt(0)}
+                                            </div>
                                         )}
                                     </div>
                                     
