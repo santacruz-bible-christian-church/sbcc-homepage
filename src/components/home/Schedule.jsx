@@ -1,10 +1,12 @@
 import { Calendar, Clock, MapPin, Play, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useWeeklyVerse } from "@/hooks";
 import { motion } from "framer-motion";
 
 export default function Schedule() {
     const { settings } = useSettings();
+    const weeklyVerse = useWeeklyVerse();
 
     return (
         <section id="schedule" className="relative py-24 md:py-32 bg-neutral-900 border-t border-b border-white/10 overflow-hidden">
@@ -38,7 +40,7 @@ export default function Schedule() {
                     transition={{ duration: 0.5 }}
                     className="text-center mb-16"
                 >
-                    <span className="font-mono text-primary text-xs font-bold uppercase tracking-[0.2em] mb-4 block">
+                    <span className="font-mono text-blue-400 text-xs font-bold uppercase tracking-[0.2em] mb-4 block text-shadow-glow">
                         // System Broadcast
                     </span>
                     <h2 className="font-serif text-4xl md:text-6xl text-white mb-6">
@@ -176,8 +178,9 @@ export default function Schedule() {
                                     <span className="text-sm break-words border-b border-transparent hover:border-black transition-colors w-fit">{settings.email || "info@sbcc.church"}</span>
                                 </div>
                                 <div className="pt-2">
-                                    <span className="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Office Hours</span>
-                                    <span>TUE - FRI: 9AM - 5PM</span>
+                                    <span className="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Weekly Verse</span>
+                                    <span className="italic block mb-1">"{weeklyVerse.text}"</span>
+                                    <span className="block font-bold text-[10px] text-right">— {weeklyVerse.reference}</span>
                                 </div>
                             </div>
                         </div>

@@ -28,14 +28,14 @@ export default function Contact() {
     ].filter(link => link.href);
 
     return (
-        <section id="contact" className="py-24 md:py-32 bg-neutral-100 border-t border-b border-black">
+        <section id="contact" className="py-24 md:py-32 bg-neutral-100 border-t border-b border-black overflow-hidden">
             <div className="container mx-auto px-6">
                 
                 {/* Tactical Header */}
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b-4 border-black pb-4">
                     <div>
                         <span className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 mb-2 block">
-                            // Sector 4: Communications
+                            // Ways to Reach Us
                         </span>
                         <h2 className="font-serif text-5xl md:text-7xl text-black uppercase tracking-tighter">
                             <motion.span
@@ -44,13 +44,13 @@ export default function Contact() {
                                 viewport={{ once: true }}
                                 transition={{ duration: 1, staggerChildren: 0.1 }}
                             >
-                                Establish<br/>Connection
+                                Connect<br/>With Us
                             </motion.span>
                         </h2>
                     </div>
                     <div className="hidden md:block text-right font-mono text-xs text-neutral-400">
-                        <div className="animate-pulse text-green-600 font-bold mb-1">● FREQUENCY OPEN</div>
-                        <div>WAITING FOR TRANSMISSION...</div>
+                        <div className="animate-pulse text-green-600 font-bold mb-1">● OFFICE OPEN</div>
+                        <div>READY TO SERVE YOU</div>
                     </div>
                 </div>
 
@@ -72,7 +72,7 @@ export default function Contact() {
                             
                             <div className="relative z-10">
                                 <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-neutral-500 mb-2 border-b border-neutral-400/50 pb-1 w-max">
-                                    Base Operations
+                                    Our Location
                                 </h3>
                                 <div className="flex items-start gap-4 mb-4">
                                     <MapPin className="w-5 h-5 text-neutral-800 mt-1" />
@@ -92,7 +92,7 @@ export default function Contact() {
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                     >
-                                        <Target className="w-4 h-4 mr-2" /> Initiate Navigation
+                                        <Target className="w-4 h-4 mr-2" /> Get Directions
                                     </a>
                                 </Button>
                             </div>
@@ -107,14 +107,14 @@ export default function Contact() {
                                 className="bg-white p-5 border-2 border-dashed border-neutral-300 hover:border-black hover:bg-neutral-50 transition-all duration-300 flex flex-col justify-between group h-full"
                             >
                                 <div>
-                                    <div className="font-mono text-[10px] uppercase text-neutral-400 mb-2">Voice Line</div>
+                                    <div className="font-mono text-[10px] uppercase text-neutral-400 mb-2">Phone</div>
                                     <Phone className="w-6 h-6 text-neutral-600 mb-2 group-hover:text-black" />
                                     <p className="font-mono text-sm font-bold text-neutral-800 break-words">
                                         {settings.phone || '(+63) 917-222-2222'}
                                     </p>
                                 </div>
                                 <div className="mt-4 text-[10px] uppercase tracking-widest text-neutral-400 group-hover:text-black">
-                                    Tap to Dial -&gt;
+                                    Tap to Call -&gt;
                                 </div>
                             </motion.a>
 
@@ -125,14 +125,14 @@ export default function Contact() {
                                 className="bg-white p-5 border-2 border-dashed border-neutral-300 hover:border-black hover:bg-neutral-50 transition-all duration-300 flex flex-col justify-between group h-full"
                             >
                                 <div>
-                                    <div className="font-mono text-[10px] uppercase text-neutral-400 mb-2">Digital Mail</div>
+                                    <div className="font-mono text-[10px] uppercase text-neutral-400 mb-2">Email</div>
                                     <Mail className="w-6 h-6 text-neutral-600 mb-2 group-hover:text-black" />
                                     <p className="font-mono text-sm font-bold text-neutral-800 break-all">
                                         {settings.email || '1992.sbcc@gmail.com'}
                                     </p>
                                 </div>
                                 <div className="mt-4 text-[10px] uppercase tracking-widest text-neutral-400 group-hover:text-black">
-                                    Send Packet -&gt;
+                                    Send Email -&gt;
                                 </div>
                             </motion.a>
                         </div>
@@ -140,7 +140,7 @@ export default function Contact() {
                         {/* Social Signals */}
                         <motion.div variants={item} className="bg-black/5 p-4 rounded-sm border border-black/10">
                              <div className="font-mono text-[10px] uppercase text-neutral-500 mb-3 flex items-center gap-2">
-                                <Radio className="w-3 h-3" /> External Signals
+                                <Radio className="w-3 h-3" /> Follow Us Online
                              </div>
                              <div className="flex gap-4">
                                 {socialLinks.map((link) => (
@@ -174,8 +174,8 @@ export default function Contact() {
                                 </div>
                             </div>
                             <div className="mt-2 flex justify-between items-center font-mono text-[10px] uppercase text-neutral-500">
-                                <span>Sector 4: Media Ops</span>
-                                <span>Auth: Clearance Lvl 2</span>
+                                <span>Media Ministry</span>
+                                <span>Spreading the Gospel Online</span>
                             </div>
                         </motion.div>
                     </motion.div>

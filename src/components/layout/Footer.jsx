@@ -42,7 +42,7 @@ export default function Footer() {
                     
                     {/* Col 1: Mission Spec */}
                     <div className="p-8 hover:bg-neutral-900 transition-colors duration-300">
-                        <span className="block mb-6 text-neutral-600">// MISSION_STATEMENT_V1</span>
+                        <span className="block mb-6 text-neutral-600">// OUR_MISSION</span>
                         <p className="uppercase leading-relaxed text-neutral-300">
                             "{settings.mission || "TO KNOW CHRIST AND MAKE HIM KNOWN THROUGH WORSHIP, DISCIPLESHIP, AND SERVICE."}"
                         </p>
@@ -51,7 +51,7 @@ export default function Footer() {
                     {/* Col 2: Sitemap */}
                     <div className="p-8 hover:bg-neutral-900 transition-colors duration-300 flex flex-col justify-between">
                         <div>
-                            <span className="block mb-6 text-neutral-600">// SITE_MAP</span>
+                            <span className="block mb-6 text-neutral-600">// DISCOVER</span>
                             <nav className="flex flex-col gap-2">
                                 {NAV_LINKS.map((link) => (
                                     <Link
@@ -69,10 +69,10 @@ export default function Footer() {
 
                     {/* Col 3: System Status */}
                     <div className="p-8 hover:bg-neutral-900 transition-colors duration-300">
-                        <span className="block mb-6 text-neutral-600">// SYSTEM_STATUS</span>
+                        <span className="block mb-6 text-neutral-600">// LIVE_UPDATES</span>
                         <div className="space-y-4">
                             <div className="flex justify-between border-b border-neutral-800 pb-2">
-                                <span>SERVER_TIME</span>
+                                <span>CURRENT_TIME</span>
                                 <span className="text-white">{time.toLocaleTimeString()}</span>
                             </div>
                             <div className="flex justify-between border-b border-neutral-800 pb-2">
@@ -82,7 +82,7 @@ export default function Footer() {
                             <div className="flex justify-between border-b border-neutral-800 pb-2">
                                 <span>CONNECTION</span>
                                 <span className="text-green-500 font-bold flex items-center gap-2">
-                                    <Activity className="w-3 h-3 animate-pulse" /> SECURE
+                                    <Activity className="w-3 h-3 animate-pulse" /> ONLINE
                                 </span>
                             </div>
                             <div className="flex gap-4 mt-6">
@@ -105,7 +105,7 @@ export default function Footer() {
                     <div className="p-0 hover:bg-neutral-900 transition-colors duration-300 relative group cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                             <ArrowUp className="w-8 h-8 text-neutral-600 group-hover:text-white group-hover:-translate-y-2 transition-all duration-300" />
-                            <span className="uppercase tracking-widest text-neutral-600 group-hover:text-white">Return to Surface</span>
+                            <span className="uppercase tracking-widest text-neutral-600 group-hover:text-white">Back to Top</span>
                         </div>
                     </div>
 
@@ -115,8 +115,8 @@ export default function Footer() {
             {/* Bottom Grid: Copyright */}
             <div className="border-t border-neutral-800">
                  <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-neutral-600 uppercase">
-                    <p>© {new Date().getFullYear()} {settings.app_name} // ALL RIGHTS RESERVED</p>
-                    <p>BUILD_VER: 2.0.4 // BRUTALIST_MODE</p>
+                    <p>© {new Date().getFullYear()} {settings.app_name} // TO GOD BE THE GLORY</p>
+                    <p>EST. 1992 // SANTA CRUZ, PH</p>
                  </div>
             </div>
         </footer>

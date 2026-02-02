@@ -1,4 +1,5 @@
-import { Calendar, Loader2, Newspaper, Share2 } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Loader2, Newspaper, Share2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -40,6 +41,32 @@ export default function AnnouncementsPage() {
     
     // Get current date for the masthead
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleShare = async () => {
+        const shareData = {
+            title: featuredAnnouncement?.title || "SBCC Announcements",
+            text: `Check out this announcement from SBCC: ${featuredAnnouncement?.title}`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log('Error sharing:', err);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(shareData.url);
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        }
+    };
 
     return (
         <PageWrapper className="min-h-screen bg-[#f4f1ea] font-serif text-neutral-900 selection:bg-neutral-900 selection:text-[#f4f1ea]">
@@ -108,9 +135,12 @@ export default function AnnouncementsPage() {
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <span>{Math.ceil(featuredAnnouncement.body.split(' ').length / 200)} min read</span>
-                                                <button className="flex items-center gap-1 hover:text-black transition-colors">
-                                                    <Share2 className="w-3 h-3" />
-                                                    Share
+                                                <button 
+                                                    onClick={handleShare}
+                                                    className="flex items-center gap-1 hover:text-black transition-colors"
+                                                >
+                                                    {isCopied ? <Check className="w-3 h-3 text-green-600" /> : <Share2 className="w-3 h-3" />}
+                                                    {isCopied ? <span className="text-green-600 font-bold">Copied!</span> : "Social"}
                                                 </button>
                                             </div>
                                         </div>
