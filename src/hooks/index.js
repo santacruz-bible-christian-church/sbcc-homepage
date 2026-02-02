@@ -2,6 +2,7 @@
 export { useAnnouncements } from "./useAnnouncements";
 export { useEvents } from "./useEvents";
 export { useTeam } from "./useTeam";
+export { useWeeklyVerse } from "./useWeeklyVerse";
 
 // Utility hooks
 export { useScrollToTop } from "./useScrollToTop";
