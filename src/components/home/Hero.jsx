@@ -59,11 +59,10 @@ export default function Hero() {
                             className="relative font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.8] text-foreground mb-8 lg:mb-8 tracking-tighter drop-shadow-xl"
                         >
                             <span className="block italic ml-1 lg:ml-4 text-foreground/80 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]">Welcome</span>
-                            <span className="block font-bold mt-2 lg:-mr-32 relative z-30 drop-shadow-[0_0_20px_rgba(240,230,210,0.9)]">
+                            <span className="inline-block font-bold mt-2 lg:-mr-32 relative z-30 drop-shadow-[0_0_20px_rgba(240,230,210,0.9)]">
                                 Home.
-                                {/* Scribble decoration */}
-                                <svg className="absolute -bottom-2 right-0 w-24 lg:-bottom-4 lg:w-32 h-12 text-accent" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 15C20 10 50 5 95 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                <svg className="absolute -bottom-6 lg:-bottom-4 -left-[5%] w-[110%] h-12 text-amber-600" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 15C20 10 50 5 95 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
                                 </svg>
                             </span>
                         </motion.h1>

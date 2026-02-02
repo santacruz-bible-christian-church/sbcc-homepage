@@ -65,7 +65,7 @@ export default function Navbar() {
                             <img 
                                 src="/sbcc-logo.png" 
                                 alt="SBCC Seal" 
-                                className="w-full h-full object-contain grayscale brightness-0 opacity-80 mix-blend-multiply filter contrast-150"
+                                className="w-full h-full object-contain opacity-90 hover:opacity-100 transition-opacity"
                             />
                         </div>
                         <div className="flex flex-col">
