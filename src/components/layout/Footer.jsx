@@ -115,8 +115,8 @@ export default function Footer() {
             {/* Bottom Grid: Copyright */}
             <div className="border-t border-neutral-800">
                  <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center text-neutral-600 uppercase">
-                    <p>© {new Date().getFullYear()} {settings.app_name} // TO GOD BE THE GLORY</p>
-                    <p>EST. 1992 // SANTA CRUZ, PH</p>
+                    <p>© {new Date().getFullYear()} SANTA CRUZ BIBLE CHRISTIAN CHURCH // TO GOD BE THE GLORY</p>
+                    <p>EST. 1992 // SANTA CRUZ, LAGUNA</p>
                  </div>
             </div>
         </footer>
