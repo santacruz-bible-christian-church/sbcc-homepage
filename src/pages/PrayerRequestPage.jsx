@@ -1,21 +1,103 @@
 import { useState, useEffect } from "react";
-import { Heart, Send, PenTool } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import PrayerRequestModal from "@/components/modals/PrayerRequestModal";
-
+import { api } from "@/services/api";
+import { AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/layout/PageWrapper";
+import PrayerDeskForm from "@/components/prayer/PrayerDeskForm";
+import SealedEnvelope from "@/components/prayer/SealedEnvelope";
 
 export default function PrayerRequestPage() {
-    const [modalOpen, setModalOpen] = useState(false);
-
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
+    const [status, setStatus] = useState("idle"); // "idle" | "submitting" | "success" | "error"
+    const [errorMessage, setErrorMessage] = useState("");
+    const [formData, setFormData] = useState({
+        title: "",
+        requesterName: "",
+        requesterEmail: "",
+        requesterPhone: "",
+        category: "other",
+        description: "",
+        isAnonymous: false
+    });
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({ ...prev, [id]: value }));
+    };
+
+    const handleCategoryChange = (value) => {
+        setFormData(prev => ({ ...prev, category: value }));
+    };
+
+    const handleAnonymousChange = (checked) => {
+        setFormData(prev => ({
+            ...prev,
+            isAnonymous: checked,
+            ...(checked
+                ? { requesterName: "", requesterEmail: "", requesterPhone: "" }
+                : {})
+        }));
+    };
+
+    const resetForm = () => {
+        setFormData({
+            title: "",
+            requesterName: "",
+            requesterEmail: "",
+            requesterPhone: "",
+            category: "other",
+            description: "",
+            isAnonymous: false
+        });
+        setStatus("idle");
+        setErrorMessage("");
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus("submitting");
+        setErrorMessage("");
+
+        if (!formData.isAnonymous && !formData.requesterName.trim()) {
+            setStatus("error");
+            setErrorMessage("Please enter your name or choose to send anonymously.");
+            return;
+        }
+
+        try {
+            await api.submitPrayerRequest(formData);
+            setStatus("success");
+        } catch (error) {
+            console.error("Prayer submission failed:", error);
+            setStatus("error");
+            const errStatus = error?.status;
+            const errData = error?.data;
+
+            const extractValidationMessage = () => {
+                if (!errData) return null;
+                if (typeof errData === 'string') return errData;
+                if (typeof errData?.detail === 'string') return errData.detail;
+                if (typeof errData?.message === 'string') return errData.message;
+                return null;
+            };
+
+            if (errStatus === 429) {
+                setErrorMessage("Too many submissions recently. Please wait a moment.");
+            } else if (errStatus === 400) {
+                const validationMsg = extractValidationMessage();
+                setErrorMessage(validationMsg ? `Details: ${validationMsg}` : "Please verify your input fields.");
+            } else {
+                setErrorMessage("Unable to establish link with media database. Try again.");
+            }
+        }
+    };
+
     return (
-        <PageWrapper className="min-h-screen bg-[#f4f1ea] font-sans antialiased selection:bg-neutral-900 selection:text-[#f4f1ea]">
+        <PageWrapper className="min-h-screen bg-[#f4f1ea] font-sans antialiased selection:bg-neutral-900 selection:text-[#f4f1ea] overflow-x-hidden">
             <Navbar />
 
             {/* HEADER: Stationery Branding */}
@@ -35,53 +117,39 @@ export default function PrayerRequestPage() {
                 </div>
             </header>
 
-            {/* CONTENT: The Letter */}
-            <section className="py-20 px-6">
-                <div className="container mx-auto max-w-3xl">
-                    <div className="bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] border-2 border-black p-8 md:p-16 relative">
-                        {/* Stamp/Mark */}
-                        <div className="absolute top-8 right-8 w-24 h-24 border-2 border-neutral-300 rounded-full flex items-center justify-center opacity-50 rotate-12 hidden md:flex">
-                            <span className="font-mono text-[10px] uppercase text-center leading-tight text-neutral-400">
-                                Postage<br/>Paid By<br/>Christ
-                            </span>
-                        </div>
-
-                        {/* Body Text */}
-                        <div className="space-y-8 font-mono text-sm md:text-base leading-relaxed text-neutral-700">
-                            <p>
-                                <span className="font-bold text-black uppercase tracking-widest mr-2">Dear Family,</span>
-                            </p>
-                            <p>
-                                Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.
-                            </p>
-                            <p>
-                                There is something profound about writing it down—sealing your worries, your hopes, and your gratitude into a letter and sending it heavenward. Our team is here to read, to agree, and to lift these letters up with you.
-                            </p>
-                            <p>
-                                You are not writing into the void. You are heard.
-                            </p>
-                            <div className="pt-8 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between border-t-2 border-neutral-100 mt-12">
-                                <div>
-                                    <p className="font-serif italic text-lg text-neutral-500 mb-1">With Love,</p>
-                                    <p className="font-bold text-xl uppercase tracking-widest">The Prayer Team</p>
-                                </div>
-                                <Button 
-                                    onClick={() => setModalOpen(true)}
-                                    className="h-auto py-4 px-8 bg-black text-white hover:bg-neutral-800 rounded-none border-2 border-transparent hover:border-black transition-all font-mono uppercase tracking-widest text-xs font-bold flex items-center gap-2 shadow-none hover:translate-y-px"
-                                >
-                                    <PenTool className="w-4 h-4" />
-                                    Write a Letter
-                                </Button>
-                            </div>
-                        </div>
+            {/* CONTENT: Interactive Correspondence Writing Desk */}
+            <section className="py-20 px-4 md:px-6">
+                <div className="container mx-auto max-w-4xl">
+                    
+                    {/* The Leather Desk Blotter Mat */}
+                    <div className="bg-[#4a3525] border-[6px] border-[#2c1e14] shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-4 md:p-8 relative rounded-sm overflow-hidden">
+                        {/* Wood Grain blotter borders overlay */}
+                        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle,_rgba(255,255,255,0.1)_1px,_transparent_1px)] bg-[length:24px_24px]"></div>
+                        
+                        <AnimatePresence mode="wait">
+                            {status !== "success" ? (
+                                <PrayerDeskForm
+                                    formData={formData}
+                                    status={status}
+                                    errorMessage={errorMessage}
+                                    onChange={handleChange}
+                                    onCategoryChange={handleCategoryChange}
+                                    onAnonymousChange={handleAnonymousChange}
+                                    onSubmit={handleSubmit}
+                                />
+                            ) : (
+                                <SealedEnvelope 
+                                    formData={formData}
+                                    onReset={resetForm}
+                                />
+                            )}
+                        </AnimatePresence>
                     </div>
+
                 </div>
             </section>
 
             <Footer />
-
-            {/* Prayer Request Modal */}
-            <PrayerRequestModal open={modalOpen} onOpenChange={setModalOpen} />
         </PageWrapper>
     );
 }
