@@ -6,6 +6,7 @@ export { useWeeklyVerse } from "./useWeeklyVerse";
 
 // Utility hooks
 export { useScrollToTop } from "./useScrollToTop";
+export { useServiceSchedule } from "./useServiceSchedule";
 
 // Formatters (not hooks, but utilities)
 export {

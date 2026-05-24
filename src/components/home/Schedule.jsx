@@ -1,34 +1,17 @@
 import { Calendar, Clock, MapPin, Play, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useWeeklyVerse } from "@/hooks";
+import { useWeeklyVerse, useServiceSchedule } from "@/hooks";
 import { motion } from "framer-motion";
 
 export default function Schedule() {
     const { settings } = useSettings();
     const weeklyVerse = useWeeklyVerse();
+    const { lines: scheduleLines } = useServiceSchedule(settings.service_schedule);
 
     return (
         <section id="schedule" className="relative py-24 md:py-32 bg-neutral-900 border-t border-b border-white/10 overflow-hidden">
-            {/* Custom Animations */}
-            <style>{`
-                @keyframes scanline {
-                    0% { transform: translateY(-100%); }
-                    100% { transform: translateY(100%); }
-                }
-                @keyframes marquee {
-                    0% { transform: translateX(100%); }
-                    100% { transform: translateX(-100%); }
-                }
-                .animate-scanline {
-                    animation: scanline 2s linear infinite;
-                }
-                .animate-marquee {
-                    animation: marquee 15s linear infinite;
-                }
-            `}</style>
 
-            {/* Texture Overlay */}
             <div className="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMwMDAiLz4KPC9zdmc+')] mix-blend-overlay pointer-events-none" />
             
             <div className="container mx-auto px-6 relative z-10">
@@ -88,7 +71,7 @@ export default function Schedule() {
                                 </h3>
                                 <div className="space-y-3 font-mono text-sm">
                                     {/* Parse multiple services if separated by newlines or commas */}
-                                    {(settings.service_schedule?.split(/[\n,]/) || ["9:00 AM"]).map((time, index) => (
+                                    {scheduleLines.map((time, index) => (
                                         <div key={index} className="flex items-center gap-2">
                                             <Clock className="w-4 h-4 text-primary shrink-0" />
                                             <span>{time.trim()}</span>

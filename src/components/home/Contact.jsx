@@ -166,6 +166,10 @@ export default function Contact() {
                                     src="/assets/livestream-setup.jpg" 
                                     className="w-full h-full object-cover opacity-80" 
                                     alt="Media Control Room"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://images.unsplash.com/photo-1603739903239-8b6e64c3b185?q=80&w=2071&auto=format&fit=crop';
+                                    }}
                                 />
                                 {/* Scanline */}
                                 <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-50" />
