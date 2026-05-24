@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Menu, X, LogIn, ArrowRight, Minus } from "lucide-react";
+import { Menu, X, LogIn, ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/contexts/SettingsContext";
 import { NAV_LINKS, EXTERNAL_LINKS } from "@/constants";
-import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function Navbar() {
     const { settings, error: settingsError } = useSettings();
@@ -130,6 +131,9 @@ export default function Navbar() {
                                     className="w-[85vw] sm:w-[400px] border-l-[3px] border-black bg-[#f4f1ea] p-0 overflow-hidden"
                                     hideDefaultClose={true}
                                 >
+                                    <VisuallyHidden.Root>
+                                        <SheetTitle>Navigation Menu</SheetTitle>
+                                    </VisuallyHidden.Root>
                                     <div className="h-full flex flex-col relative z-10">
                                         <div className="p-6 border-b-2 border-dashed border-black/20 flex items-center justify-between">
                                             <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Index_v2.0</span>
