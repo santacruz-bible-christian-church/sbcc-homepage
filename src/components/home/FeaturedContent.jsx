@@ -216,7 +216,7 @@ export default function FeaturedContent() {
                             
                             <span className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
                                 <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                                <UpNext />
+                                Up Next
                             </span>
                             
                             {event ? (
@@ -279,4 +279,4 @@ export default function FeaturedContent() {
     );
 }
 
-const UpNext = () => <span>Up Next</span>;
+
